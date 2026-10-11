@@ -39,4 +39,5 @@ const [firstPage] = await newPdf.copyPages(pdf, [0]);
 newPdf.addPage(firstPage);
 
 const splitBytes = await newPdf.save();
+downloadFile(splitBytes, "split_page_1.pdf", "application/pdf");
 }
