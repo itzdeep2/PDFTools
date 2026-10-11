@@ -27,6 +27,12 @@
 <button onclick="convertPdfToJpg()">Convert</button>
 <canvas id="pdf-canvas" style="display:none;"></canvas>
 </div>
+<div class="tool-section" id="unlock-sec">
+<h2>Remove Password</h2>
+<input type="file" id="unlock-file" accept="application/pdf">
+<input type="text" id="pdf-pass" placeholder="Enter password">
+<button onclick="removePassword()">Unlock and Save</button>
+</div>
 </div>
 <script src="app.js"></script>
 </body>

@@ -72,3 +72,14 @@ a.click();
 };
 fileReader.readAsArrayBuffer(file);
 }
+async function removePassword() {
+const file = document.getElementById('unlock-file').files[0];
+const pass = document.getElementById('pdf-pass').value;
+if (!file || !pass) return;
+
+const arrayBuffer = await file.arrayBuffer();
+const pdf = await PDFLib.PDFDocument.load(arrayBuffer, { password: pass });
+
+const unlockedBytes = await pdf.save();
+downloadFile(unlockedBytes, "unlocked.pdf", "application/pdf");
+}
