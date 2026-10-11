@@ -21,6 +21,12 @@
 <input type="file" id="split-file" accept="application/pdf">
 <button onclick="splitPDF()">Extract Page 1</button>
 </div>
+<div class="tool-section" id="jpg-sec">
+<h2>PDF to JPG (Page 1)</h2>
+<input type="file" id="jpg-file" accept="application/pdf">
+<button onclick="convertPdfToJpg()">Convert</button>
+<canvas id="pdf-canvas" style="display:none;"></canvas>
+</div>
 </div>
 <script src="app.js"></script>
 </body>
