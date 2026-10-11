@@ -97,3 +97,22 @@ const { data: { text } } = await worker.recognize(file);
 document.getElementById('ocr-result').innerText = text;
 await worker.terminate();
 }
+async function addTextToPdf() {
+const file = document.getElementById('text-pdf-file').files[0];
+const textVal = document.getElementById('pdf-text-input').value;
+if (!file || !textVal) return;
+
+const arrayBuffer = await file.arrayBuffer();
+const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+const pages = pdfDoc.getPages();
+const firstPg = pages[0];
+
+firstPg.drawText(textVal, {
+x: 50,
+y: 500,
+size: 24
+});
+
+const modifiedBytes = await pdfDoc.save();
+downloadFile(modifiedBytes, "text_added.pdf", "application/pdf");
+}
