@@ -83,3 +83,17 @@ const pdf = await PDFLib.PDFDocument.load(arrayBuffer, { password: pass });
 const unlockedBytes = await pdf.save();
 downloadFile(unlockedBytes, "unlocked.pdf", "application/pdf");
 }
+async function runOCR() {
+const file = document.getElementById('ocr-file').files[0];
+if (!file) return;
+
+document.getElementById('ocr-result').innerText = "processing...";
+
+const worker = await Tesseract.createWorker();
+await worker.loadLanguage('eng');
+await worker.initialize('eng');
+
+const { data: { text } } = await worker.recognize(file);
+document.getElementById('ocr-result').innerText = text;
+await worker.terminate();
+}
