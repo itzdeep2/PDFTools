@@ -87,16 +87,34 @@ async function runOCR() {
 const file = document.getElementById('ocr-file').files[0];
 if (!file) return;
 
-document.getElementById('ocr-result').innerText = "processing...";
+document.getElementById('ocr-result').innerText = "processing... this might take a minute";
+
+let targetForOcr = file;
+
+if (file.type === "application/pdf") {
+const arrayBuffer = await file.arrayBuffer();
+const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+const page = await pdf.getPage(1);
+
+const viewport = page.getViewport({scale: 1.5});
+const canvas = document.createElement('canvas');
+const context = canvas.getContext('2d');
+canvas.height = viewport.height;
+canvas.width = viewport.width;
+
+await page.render({canvasContext: context, viewport: viewport}).promise;
+targetForOcr = canvas.toDataURL('image/jpeg');
+}
 
 const worker = await Tesseract.createWorker();
 await worker.loadLanguage('eng');
 await worker.initialize('eng');
 
-const { data: { text } } = await worker.recognize(file);
+const { data: { text } } = await worker.recognize(targetForOcr);
 document.getElementById('ocr-result').innerText = text;
 await worker.terminate();
 }
+
 async function addTextToPdf() {
 const file = document.getElementById('text-pdf-file').files[0];
 const textVal = document.getElementById('pdf-text-input').value;
