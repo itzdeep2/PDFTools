@@ -3,12 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Local PDF Tool</title>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="container">
 <h1>PDF Utilities</h1>
 <div id="tools-wrapper">
+<div class="tool-section" id="merge-sec">
+    <h2>Merge PDFs</h2>
+    <input type="file" id="merge-files" multiple accept="application/pdf">
+    <button onclick="mergePDFs()">Merge Files</button>
 </div>
 </div>
 <script src="app.js"></script>
