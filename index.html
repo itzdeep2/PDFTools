@@ -40,6 +40,12 @@
 <button onclick="runOCR()">Extract Text</button>
 <p id="ocr-result"></p>
 </div>
+<div class="tool-section" id="add-text-sec">
+<h2>Add Text to PDF</h2>
+<input type="file" id="text-pdf-file" accept="application/pdf">
+<input type="text" id="pdf-text-input" placeholder="Text to add">
+<button onclick="addTextToPdf()">Add Text</button>
+</div>
 </div>
 <script src="app.js"></script>
 </body>
