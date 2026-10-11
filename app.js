@@ -116,3 +116,13 @@ size: 24
 const modifiedBytes = await pdfDoc.save();
 downloadFile(modifiedBytes, "text_added.pdf", "application/pdf");
 }
+async function compressPdf() {
+const file = document.getElementById('compress-file').files[0];
+if (!file) return;
+
+const arrayBuffer = await file.arrayBuffer();
+const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+
+const compressedBytes = await pdfDoc.save({ useObjectStreams: false });
+downloadFile(compressedBytes, "compressed.pdf", "application/pdf");
+}
