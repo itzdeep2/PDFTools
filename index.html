@@ -5,6 +5,7 @@
 <title>Local PDF Tool</title>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -32,6 +33,12 @@
 <input type="file" id="unlock-file" accept="application/pdf">
 <input type="text" id="pdf-pass" placeholder="Enter password">
 <button onclick="removePassword()">Unlock and Save</button>
+</div>
+<div class="tool-section" id="ocr-sec">
+<h2>OCR (Image to Text)</h2>
+<input type="file" id="ocr-file" accept="image/*">
+<button onclick="runOCR()">Extract Text</button>
+<p id="ocr-result"></p>
 </div>
 </div>
 <script src="app.js"></script>
