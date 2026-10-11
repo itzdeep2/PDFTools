@@ -27,3 +27,16 @@ a.download = filename;
 a.click();
 URL.revokeObjectURL(url);
 }
+async function splitPDF() {
+const file = document.getElementById('split-file').files[0];
+if (!file) return;
+
+const arrayBuffer = await file.arrayBuffer();
+const pdf = await PDFLib.PDFDocument.load(arrayBuffer);
+
+const newPdf = await PDFLib.PDFDocument.create();
+const [firstPage] = await newPdf.copyPages(pdf, [0]);
+newPdf.addPage(firstPage);
+
+const splitBytes = await newPdf.save();
+}
