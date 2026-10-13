@@ -132,19 +132,49 @@ color: var(--text-muted);
 
 .tool-section {
 display: none;
-}
-.drop-zone {
-border: 2px dashed #bbb;
-padding: 40px 20px;
+background: var(--card-bg);
+padding: 40px;
+border-radius: 16px;
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+max-width: 600px;
+margin: 0 auto;
 text-align: center;
-background: #fafafa;
-margin-bottom: 15px;
-border-radius: 8px;
 }
 
-.drop-zone:hover {
-background: #f0f0f0;
-border-color: #888;
+.tool-section h2 {
+margin-top: 0;
+margin-bottom: 24px;
+}
+
+.drop-zone {
+border: 2px dashed #cbd5e1;
+padding: 50px 20px;
+background: #f8fafc;
+border-radius: 12px;
+margin-bottom: 20px;
+transition: all 0.2s ease;
+position: relative;
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+background: #eff6ff;
+border-color: var(--primary);
+}
+
+.drop-zone p {
+color: var(--text-muted);
+font-weight: 600;
+pointer-events: none;
+}
+
+.drop-zone input[type="file"] {
+position: absolute;
+width: 100%;
+height: 100%;
+top: 0;
+left: 0;
+opacity: 0;
+cursor: pointer;
 }
 
 #editor-ui {

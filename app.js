@@ -267,3 +267,32 @@ activeElement = null;
 }
 }
 });
+
+document.querySelectorAll('.drop-zone').forEach(zone => {
+    const fileInput = zone.querySelector('input[type="file"]');
+    const textDesc = zone.querySelector('p');
+
+    zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.classList.add('dragover');
+    });
+
+    zone.addEventListener('dragleave', () => {
+        zone.classList.remove('dragover');
+    });
+
+    zone.addEventListener('drop', () => {
+        zone.classList.remove('dragover');
+    });
+
+    if (fileInput) {
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                textDesc.innerText = fileInput.files.length === 1 
+                    ? fileInput.files[0].name 
+                    : `${fileInput.files.length} files selected`;
+                textDesc.style.color = '#4f46e5';
+            }
+        });
+    }
+});
