@@ -194,60 +194,31 @@ await page.render({canvasContext: context, viewport: viewport}).promise;
 let mode = 'none';
 
 function enableTextMode() {
-mode = 'text';
+    mode = 'text';
 }
 
 document.getElementById('editor-canvas-wrapper').addEventListener('click', function(e) {
-if (mode !== 'text') return;
-if (e.target !== document.querySelector('#editor-canvas-wrapper canvas')) return;
+    if (mode !== 'text') return;
+    if (e.target !== document.querySelector('#editor-canvas-wrapper canvas')) return;
 
-const wrapperRect = this.getBoundingClientRect();
-const x = e.clientX - wrapperRect.left;
-const y = e.clientY - wrapperRect.top;
+    const wrapperRect = this.getBoundingClientRect();
+    const x = e.clientX - wrapperRect.left;
+    const y = e.clientY - wrapperRect.top;
 
-const textDiv = document.createElement('div');
-textDiv.contentEditable = true;
-textDiv.className = 'draggable-text';
-textDiv.innerText = 'Type here';
-textDiv.style.left = x + 'px';
-textDiv.style.top = y + 'px';
-textDiv.style.color = '#000000';
-textDiv.style.fontSize = '24px';
-textDiv.style.fontFamily = 'Arial';
-
-this.appendChild(textDiv);
-textDiv.focus();
-visualElements.push(textDiv);
-mode = 'none'; 
-});
-let mode = 'none';
-
-function enableTextMode() {
-mode = 'text';
-}
-
-document.getElementById('editor-canvas-wrapper').addEventListener('click', function(e) {
-if (mode !== 'text') return;
-if (e.target !== document.querySelector('#editor-canvas-wrapper canvas')) return;
-
-const wrapperRect = this.getBoundingClientRect();
-const x = e.clientX - wrapperRect.left;
-const y = e.clientY - wrapperRect.top;
-
-const textDiv = document.createElement('div');
-textDiv.contentEditable = true;
-textDiv.className = 'draggable-text';
-textDiv.innerText = 'Type here';
-textDiv.style.left = x + 'px';
-textDiv.style.top = y + 'px';
-textDiv.style.color = '#000000';
-textDiv.style.fontSize = '24px';
-textDiv.style.fontFamily = 'Arial';
-
-this.appendChild(textDiv);
-textDiv.focus();
-visualElements.push(textDiv);
-mode = 'none'; 
+    const textDiv = document.createElement('div');
+    textDiv.contentEditable = true;
+    textDiv.className = 'draggable-text';
+    textDiv.innerText = 'Type here';
+    textDiv.style.left = x + 'px';
+    textDiv.style.top = y + 'px';
+    textDiv.style.color = '#000000';
+    textDiv.style.fontSize = '24px';
+    textDiv.style.fontFamily = 'Arial';
+    
+    this.appendChild(textDiv);
+    textDiv.focus();
+    visualElements.push(textDiv);
+    mode = 'none'; 
 });
 let isDragging = false;
 let dragTarget = null;
@@ -255,12 +226,16 @@ let startX, startY, initialX, initialY;
 
 document.addEventListener('mousedown', function(e) {
 if (e.target.classList.contains('draggable-text')) {
+if (document.activeElement === e.target) {
+return;
+}
 isDragging = true;
 dragTarget = e.target;
 startX = e.clientX;
 startY = e.clientY;
-initialX = parseInt(dragTarget.style.left, 10);
-initialY = parseInt(dragTarget.style.top, 10);
+initialX = parseInt(dragTarget.style.left, 10) || 0;
+initialY = parseInt(dragTarget.style.top, 10) || 0;
+e.preventDefault(); 
 }
 });
 
@@ -276,4 +251,38 @@ dragTarget.style.top = (initialY + dy) + 'px';
 document.addEventListener('mouseup', function() {
 isDragging = false;
 dragTarget = null;
+});
+let activeElement = null;
+
+document.addEventListener('focusin', function(e) {
+    if (e.target.classList.contains('draggable-text')) {
+        activeElement = e.target;
+        document.getElementById('text-color').value = rgb2hex(activeElement.style.color);
+        document.getElementById('text-size').value = parseInt(activeElement.style.fontSize);
+    }
+});
+
+function updateFormat() {
+    if (activeElement) {
+        activeElement.style.color = document.getElementById('text-color').value;
+        activeElement.style.fontSize = document.getElementById('text-size').value + 'px';
+    }
+}
+
+function rgb2hex(rgb) {
+    if (!rgb || rgb.indexOf('rgb') === -1) return '#000000';
+    const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (!match) return '#000000';
+    return "#" + ("0" + parseInt(match[1], 10).toString(16)).slice(-2) +
+                 ("0" + parseInt(match[2], 10).toString(16)).slice(-2) +
+                 ("0" + parseInt(match[3], 10).toString(16)).slice(-2);
+}
+document.addEventListener('focusout', function(e) {
+if (e.target.classList.contains('draggable-text') && e.target.tagName.toLowerCase() === 'div') {
+if (e.target.innerText.trim() === '') {
+e.target.remove();
+visualElements = visualElements.filter(el => el !== e.target);
+activeElement = null;
+}
+}
 });

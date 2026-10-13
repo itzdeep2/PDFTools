@@ -74,6 +74,8 @@
 <div id="editor-toolbar">
 <input type="file" id="editor-upload" accept="application/pdf">
 <button onclick="enableTextMode()">Add Text</button>
+<input type="color" id="text-color" value="#000000" onchange="updateFormat()">
+<input type="number" id="text-size" value="24" style="width: 50px;" onchange="updateFormat()">
 <button onclick="saveVisualEdits()">Apply & Save</button>
 </div>
 <div id="editor-workspace">
