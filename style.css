@@ -108,3 +108,15 @@ box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 #editor-canvas-wrapper canvas {
 display: block;
 }
+.draggable-text {
+position: absolute;
+border: 1px dashed transparent;
+padding: 2px;
+white-space: nowrap;
+outline: none;
+cursor: move;
+}
+
+.draggable-text:hover, .draggable-text:focus {
+border: 1px dashed #0282e5;
+}

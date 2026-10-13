@@ -220,3 +220,32 @@ textDiv.focus();
 visualElements.push(textDiv);
 mode = 'none'; 
 });
+let mode = 'none';
+
+function enableTextMode() {
+mode = 'text';
+}
+
+document.getElementById('editor-canvas-wrapper').addEventListener('click', function(e) {
+if (mode !== 'text') return;
+if (e.target !== document.querySelector('#editor-canvas-wrapper canvas')) return;
+
+const wrapperRect = this.getBoundingClientRect();
+const x = e.clientX - wrapperRect.left;
+const y = e.clientY - wrapperRect.top;
+
+const textDiv = document.createElement('div');
+textDiv.contentEditable = true;
+textDiv.className = 'draggable-text';
+textDiv.innerText = 'Type here';
+textDiv.style.left = x + 'px';
+textDiv.style.top = y + 'px';
+textDiv.style.color = '#000000';
+textDiv.style.fontSize = '24px';
+textDiv.style.fontFamily = 'Arial';
+
+this.appendChild(textDiv);
+textDiv.focus();
+visualElements.push(textDiv);
+mode = 'none'; 
+});
