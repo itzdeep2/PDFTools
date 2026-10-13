@@ -28,41 +28,62 @@
 <div id="tools-wrapper">
 <div class="tool-section" id="merge-sec">
     <h2>Merge PDFs</h2>
-    <input type="file" id="merge-files" multiple accept="application/pdf">
+    <div class="drop-zone">
+        <input type="file" id="merge-files" multiple accept="application/pdf">
+        <p>Drop files here or click to browse</p>
+    </div>
     <button onclick="mergePDFs()">Merge Files</button>
 </div>
 <div class="tool-section" id="split-sec">
 <h2>Split First Page</h2>
-<input type="file" id="split-file" accept="application/pdf">
+    <div class="drop-zone">
+        <input type="file" id="split-file" accept="application/pdf">
+        <p>Drop files here or click to browse</p>
+    </div>
 <button onclick="splitPDF()">Extract Page 1</button>
 </div>
 <div class="tool-section" id="jpg-sec">
 <h2>PDF to JPG (Page 1)</h2>
-<input type="file" id="jpg-file" accept="application/pdf">
+    <div class="drop-zone">
+        <input type="file" id="jpg-file" accept="application/pdf">
+        <p>Drop files here or click to browse</p>
+    </div>
 <button onclick="convertPdfToJpg()">Convert</button>
 <canvas id="pdf-canvas" style="display:none;"></canvas>
 </div>
 <div class="tool-section" id="unlock-sec">
 <h2>Remove Password</h2>
-<input type="file" id="unlock-file" accept="application/pdf">
+    <div class="drop-zone">
+        <input type="file" id="unlock-file" accept="application/pdf">
+        <p>Drop files here or click to browse</p>
+    </div>
 <input type="text" id="pdf-pass" placeholder="Enter password">
 <button onclick="removePassword()">Unlock and Save</button>
 </div>
 <div class="tool-section" id="ocr-sec">
 <h2>OCR (PDF to Text - Page 1)</h2>
-<input type="file" id="ocr-file" accept="application/pdf, image/*">
+    <div class="drop-zone">
+        <input type="file" id="ocr-file" accept="application/pdf, image/*">
+        <p>Drop files here or click to browse</p>
+    </div>
 <button onclick="runOCR()">Extract Text</button>
 <p id="ocr-result"></p>
 </div>
 <div class="tool-section" id="add-text-sec">
 <h2>Add Text to PDF</h2>
-<input type="file" id="text-pdf-file" accept="application/pdf">
+    <div class="drop-zone">
+        <input type="file" id="text-pdf-file" accept="application/pdf">
+        <p>Drop files here or click to browse</p>
+    </div>
 <input type="text" id="pdf-text-input" placeholder="Text to add">
 <button onclick="addTextToPdf()">Add Text</button>
 </div>
 <div class="tool-section" id="compress-sec">
 <h2>Basic Compress</h2>
-<input type="file" id="compress-file" accept="application/pdf">
+    <div class="drop-zone">
+        <input type="file" id="compress-file" accept="application/pdf">
+        <p>Drop files here or click to browse</p>
+    </div>
 <button onclick="compressPdf()">Compress</button>
 </div>
 </div>

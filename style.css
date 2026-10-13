@@ -60,3 +60,16 @@ background: #eee;
 .tool-section {
 display: none;
 }
+.drop-zone {
+border: 2px dashed #bbb;
+padding: 40px 20px;
+text-align: center;
+background: #fafafa;
+margin-bottom: 15px;
+border-radius: 8px;
+}
+
+.drop-zone:hover {
+background: #f0f0f0;
+border-color: #888;
+}
