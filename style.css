@@ -36,3 +36,27 @@ input[type="file"] {
 display: block;
 margin-bottom: 10px;
 }
+.grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 15px;
+}
+
+.card {
+background: #fdfdfd;
+border: 1px solid #ccc;
+padding: 30px 15px;
+text-align: center;
+text-decoration: none;
+color: #333;
+font-weight: bold;
+border-radius: 4px;
+}
+
+.card:hover {
+background: #eee;
+}
+
+.tool-section {
+display: none;
+}

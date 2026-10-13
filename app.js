@@ -1,3 +1,25 @@
+window.addEventListener('hashchange', handleRoute);
+window.addEventListener('load', handleRoute);
+
+function handleRoute() {
+const hash = window.location.hash || '#dashboard';
+
+document.getElementById('dashboard').style.display = hash === '#dashboard' ? 'block' : 'none';
+document.getElementById('nav-bar').style.display = hash === '#dashboard' ? 'none' : 'block';
+
+const sections = document.querySelectorAll('.tool-section');
+sections.forEach(sec => sec.style.display = 'none');
+
+if (hash !== '#dashboard') {
+const target = document.getElementById(hash.substring(1));
+if (target) target.style.display = 'block';
+}
+}
+
+function goHome() {
+window.location.hash = '#dashboard';
+}
+
 async function mergePDFs() {
 const files = document.getElementById('merge-files').files;
 if (files.length < 2) {
