@@ -70,7 +70,17 @@
 <p id="ocr-result"></p>
 </div>
 <div class="tool-section" id="add-text-sec">
-<h2>Add Text to PDF</h2>
+<div id="editor-ui">
+<div id="editor-toolbar">
+<input type="file" id="editor-upload" accept="application/pdf">
+<button onclick="enableTextMode()">Add Text</button>
+<button onclick="saveVisualEdits()">Apply & Save</button>
+</div>
+<div id="editor-workspace">
+<div id="editor-canvas-wrapper"></div>
+</div>
+</div>
+</div>
     <div class="drop-zone">
         <input type="file" id="text-pdf-file" accept="application/pdf">
         <p>Drop files here or click to browse</p>
