@@ -249,3 +249,31 @@ textDiv.focus();
 visualElements.push(textDiv);
 mode = 'none'; 
 });
+let isDragging = false;
+let dragTarget = null;
+let startX, startY, initialX, initialY;
+
+document.addEventListener('mousedown', function(e) {
+if (e.target.classList.contains('draggable-text')) {
+isDragging = true;
+dragTarget = e.target;
+startX = e.clientX;
+startY = e.clientY;
+initialX = parseInt(dragTarget.style.left, 10);
+initialY = parseInt(dragTarget.style.top, 10);
+}
+});
+
+document.addEventListener('mousemove', function(e) {
+if (isDragging && dragTarget) {
+const dx = e.clientX - startX;
+const dy = e.clientY - startY;
+dragTarget.style.left = (initialX + dx) + 'px';
+dragTarget.style.top = (initialY + dy) + 'px';
+}
+});
+
+document.addEventListener('mouseup', function() {
+isDragging = false;
+dragTarget = null;
+});
