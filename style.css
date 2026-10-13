@@ -1,17 +1,24 @@
+:root {
+--primary: #4f46e5;
+--primary-hover: #4338ca;
+--bg-color: #f3f4f6;
+--card-bg: #ffffff;
+--text-main: #1f2937;
+--text-muted: #6b7280;
+--border: #e5e7eb;
+}
+
 body {
-font-family: Arial, sans-serif;
-background-color: #f4f4f4;
-color: #333;
+font-family: 'Poppins', sans-serif;
+background-color: var(--bg-color);
+color: var(--text-main);
 margin: 0;
-padding: 20px;
+padding: 40px 20px;
 }
 
 #container {
-max-width: 900px;
+max-width: 1000px;
 margin: 0 auto;
-background: #fff;
-padding: 20px;
-border: 1px solid #ccc;
 }
 
 .tool-section {
