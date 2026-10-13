@@ -166,3 +166,57 @@ const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
 const compressedBytes = await pdfDoc.save({ useObjectStreams: false });
 downloadFile(compressedBytes, "compressed.pdf", "application/pdf");
 }
+
+let currentPdfDoc = null;
+let currentPdfBytes = null;
+let visualElements = [];
+
+document.getElementById('editor-upload').addEventListener('change', async function(e) {
+const file = e.target.files[0];
+if (!file) return;
+
+currentPdfBytes = await file.arrayBuffer();
+const pdf = await pdfjsLib.getDocument(currentPdfBytes).promise;
+const page = await pdf.getPage(1);
+
+const viewport = page.getViewport({scale: 1.5});
+const wrapper = document.getElementById('editor-canvas-wrapper');
+wrapper.innerHTML = ''; 
+
+const canvas = document.createElement('canvas');
+const context = canvas.getContext('2d');
+canvas.height = viewport.height;
+canvas.width = viewport.width;
+wrapper.appendChild(canvas);
+
+await page.render({canvasContext: context, viewport: viewport}).promise;
+});
+let mode = 'none';
+
+function enableTextMode() {
+mode = 'text';
+}
+
+document.getElementById('editor-canvas-wrapper').addEventListener('click', function(e) {
+if (mode !== 'text') return;
+if (e.target !== document.querySelector('#editor-canvas-wrapper canvas')) return;
+
+const wrapperRect = this.getBoundingClientRect();
+const x = e.clientX - wrapperRect.left;
+const y = e.clientY - wrapperRect.top;
+
+const textDiv = document.createElement('div');
+textDiv.contentEditable = true;
+textDiv.className = 'draggable-text';
+textDiv.innerText = 'Type here';
+textDiv.style.left = x + 'px';
+textDiv.style.top = y + 'px';
+textDiv.style.color = '#000000';
+textDiv.style.fontSize = '24px';
+textDiv.style.fontFamily = 'Arial';
+
+this.appendChild(textDiv);
+textDiv.focus();
+visualElements.push(textDiv);
+mode = 'none'; 
+});
