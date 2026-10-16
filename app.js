@@ -303,3 +303,91 @@ document.querySelectorAll('.drop-zone').forEach(zone => {
         });
     }
 });
+
+function handleImageInsert(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'draggable-image';
+        wrapper.style.left = '50px';
+        wrapper.style.top = '50px';
+        wrapper.style.width = '200px';
+        wrapper.style.height = '150px';
+        wrapper.style.backgroundImage = `url(${e.target.result})`;
+        wrapper.setAttribute('data-src', e.target.result);
+        wrapper.tabIndex = 0;
+
+        document.getElementById('editor-canvas-wrapper').appendChild(wrapper);
+        visualElements.push(wrapper);
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+}
+
+function toggleOcrPanel() {
+const panel = document.getElementById('ocr-panel');
+if(panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+}
+
+function toggleOcrPanel() {
+    const panel = document.getElementById('ocr-panel');
+    if(panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+}
+
+async function runEditorOCR() {
+    const lang = document.getElementById('editor-ocr-language').value;
+    const resultBox = document.getElementById('editor-ocr-result');
+    const wrapper = document.getElementById('editor-canvas-wrapper');
+    const canvas = wrapper.querySelector('canvas');
+    
+    if (!canvas) {
+        resultBox.innerText = "Please open a PDF file first.";
+        return;
+    }
+
+    resultBox.innerText = `Downloading ${lang} language model and scanning canvas...`;
+    const targetForOcr = canvas.toDataURL('image/jpeg');
+    
+    try {
+        const worker = await Tesseract.createWorker();
+        await worker.loadLanguage(lang);
+        await worker.initialize(lang);
+        
+        const { data: { text } } = await worker.recognize(targetForOcr);
+        resultBox.innerText = text || "No text found on this page.";
+        await worker.terminate();
+    } catch (error) {
+        resultBox.innerText = "OCR failed. Check console for details.";
+        console.error(error);
+    }
+}
+
+function showFloatingToolbar(el) {
+    const tb = document.getElementById('floating-toolbar');
+    const rect = el.getBoundingClientRect();
+    tb.style.display = 'flex';
+    tb.style.top = (rect.top - 50) + 'px';
+    tb.style.left = rect.left + 'px';
+
+    if (el.tagName.toLowerCase() === 'div' && el.classList.contains('draggable-text')) {
+        document.getElementById('text-color').value = rgb2hex(el.style.color);
+        document.getElementById('text-size').value = parseInt(el.style.fontSize) || 24;
+        document.getElementById('text-font').value = el.style.fontFamily || 'Arial';
+    }
+}
+
+function hideFloatingToolbar() {
+    document.getElementById('floating-toolbar').style.display = 'none';
+}
+
+function deleteActiveElement() {
+    if (activeElement) {
+        activeElement.remove();
+        visualElements = visualElements.filter(el => el !== activeElement);
+        hideFloatingToolbar();
+        activeElement = null;
+    }
+}
