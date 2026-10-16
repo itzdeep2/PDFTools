@@ -185,29 +185,53 @@ function enableTextMode() {
     mode = 'text';
 }
 
+
 document.getElementById('editor-canvas-wrapper').addEventListener('click', function(e) {
-    if (mode !== 'text') return;
-    if (e.target !== document.querySelector('#editor-canvas-wrapper canvas')) return;
+    if (e.target === document.querySelector('#editor-canvas-wrapper canvas')) {
+        if (typeof hideFloatingToolbar === 'function') hideFloatingToolbar();
+        const wrapperRect = document.getElementById('editor-canvas-wrapper').getBoundingClientRect();
+        const x = e.clientX - wrapperRect.left;
+        const y = e.clientY - wrapperRect.top;
 
-    const wrapperRect = this.getBoundingClientRect();
-    const x = e.clientX - wrapperRect.left;
-    const y = e.clientY - wrapperRect.top;
-
-    const textDiv = document.createElement('div');
-    textDiv.contentEditable = true;
-    textDiv.className = 'draggable-text';
-    textDiv.innerText = 'Type here';
-    textDiv.style.left = x + 'px';
-    textDiv.style.top = y + 'px';
-    textDiv.style.color = '#000000';
-    textDiv.style.fontSize = '24px';
-    textDiv.style.fontFamily = 'Arial';
-    
-    this.appendChild(textDiv);
-    textDiv.focus();
-    visualElements.push(textDiv);
-    mode = 'none'; 
+        if (mode === 'text') {
+            const textDiv = document.createElement('div');
+            textDiv.contentEditable = true;
+            textDiv.className = 'draggable-text';
+            textDiv.innerText = 'Type here';
+            textDiv.style.left = x + 'px';
+            textDiv.style.top = y + 'px';
+            textDiv.style.color = '#000000';
+            textDiv.style.fontSize = '24px';
+            textDiv.style.fontFamily = 'Arial';
+            
+            document.getElementById('editor-canvas-wrapper').appendChild(textDiv);
+            textDiv.focus();
+            visualElements.push(textDiv);
+            if (typeof showFloatingToolbar === 'function') showFloatingToolbar(textDiv);
+            mode = 'none'; 
+        } else if (mode === 'whiteout') {
+            const box = document.createElement('div');
+            box.className = 'whiteout-box draggable-text';
+            box.style.left = x + 'px';
+            box.style.top = y + 'px';
+            box.style.width = '150px';
+            box.style.height = '40px';
+            box.tabIndex = 0; 
+            
+            document.getElementById('editor-canvas-wrapper').appendChild(box);
+            visualElements.push(box);
+            mode = 'none';
+        }
+    } else if (e.target.classList.contains('draggable-text') || e.target.classList.contains('draggable-image')) {
+        activeElement = e.target;
+        if (e.target.classList.contains('draggable-text') && typeof showFloatingToolbar === 'function') {
+            showFloatingToolbar(e.target);
+        } else if (typeof hideFloatingToolbar === 'function') {
+            hideFloatingToolbar();
+        }
+    }
 });
+
 let isDragging = false;
 let dragTarget = null;
 let startX, startY, initialX, initialY;
@@ -228,12 +252,15 @@ e.preventDefault();
 });
 
 document.addEventListener('mousemove', function(e) {
-if (isDragging && dragTarget) {
-const dx = e.clientX - startX;
-const dy = e.clientY - startY;
-dragTarget.style.left = (initialX + dx) + 'px';
-dragTarget.style.top = (initialY + dy) + 'px';
-}
+    if (isDragging && activeElement) {
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        activeElement.style.left = (initialX + dx) + 'px';
+        activeElement.style.top = (initialY + dy) + 'px';
+        if (activeElement.classList.contains('draggable-text') && typeof showFloatingToolbar === 'function') {
+            showFloatingToolbar(activeElement);
+        }
+    }
 });
 
 document.addEventListener('mouseup', function() {
