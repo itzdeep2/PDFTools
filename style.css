@@ -223,3 +223,37 @@ cursor: move;
 .draggable-text:hover, .draggable-text:focus {
 border: 1px dashed #0282e5;
 }
+
+#add-text-sec {
+    padding: 0 !important;
+    max-width: 100% !important;
+    height: 100vh;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background-color: #0f172a;
+    display: none; 
+}
+
+.studio-app-layout { display: flex; flex-direction: column; height: 100%; width: 100%; text-align: left;}
+.studio-top-nav-container { border-bottom: 1px solid #334155; background: #0f172a; height: 60px; }
+.studio-top-nav { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; height: 100%; }
+.studio-main-shell { flex: 1; display: flex; overflow: hidden; background: #e2e8f0; }
+.studio-tool-rail { width: 85px; background: #1e293b; border-right: 1px solid #334155; display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; z-index: 10;}
+.studio-tool-rail-section { margin-bottom: 25px; }
+.studio-tool-rail-section-label { font-size: 11px; color: #94a3b8; text-align: center; margin-bottom: 12px; letter-spacing: 1px; font-weight: bold;}
+.studio-tool-rail-btn { background: transparent; border: none; color: #cbd5e1; width: 100%; padding: 12px 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; margin-top:0; border-radius:0;}
+.studio-tool-rail-btn:hover { color: #ffffff; background: rgba(255, 255, 255, 0.08); }
+
+.studio-shell-canvas { flex: 1; overflow: auto; display: flex; justify-content: center; align-items: flex-start; padding: 40px; position: relative; }
+.studio-empty-state { text-align: center; margin-top: 15vh; }
+
+.draggable-image {
+    position: absolute;
+    resize: both;
+    overflow: hidden;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    border: 2px dashed transparent;
+    cursor: move;
+}
+.draggable-image:hover, .draggable-image:focus { border: 2px dashed #3b82f6; }
