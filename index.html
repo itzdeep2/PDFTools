@@ -104,13 +104,73 @@
 <p id="ocr-result"></p>
 </div>
 <div class="tool-section" id="add-text-sec">
-<div id="editor-ui">
-<div id="editor-toolbar">
-<input type="file" id="editor-upload" accept="application/pdf">
-<button onclick="enableTextMode()">Add Text</button>
-<input type="color" id="text-color" value="#000000" onchange="updateFormat()">
-<input type="number" id="text-size" value="24" style="width: 50px;" onchange="updateFormat()">
-<button onclick="saveVisualEdits()">Apply & Save</button>
+<div class="tool-section" id="add-text-sec">
+                <div class="studio-app-layout">
+                    <div class="studio-top-nav-container">
+                        <header class="studio-top-nav">
+                            <div class="studio-logo" style="display:flex; align-items:center; gap:10px;">
+                                <button onclick="goHome()" style="background:transparent; color:white; border:1px solid #334155; padding:5px 10px; border-radius:4px; cursor:pointer; margin:0;">← Dashboard</button>
+                                <span style="font-weight:bold; color:white; font-size:18px;">LocalPDF Studio</span>
+                            </div>
+                            <div class="studio-nav-actions">
+                                <button type="button" class="studio-nav-btn" onclick="saveVisualEdits()" style="background:#3b82f6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; margin:0;">Download PDF</button>
+                            </div>
+                        </header>
+                    </div>
+                    <main class="studio-main-shell">
+                        <aside class="studio-tool-rail">
+                            <div class="studio-tool-rail-section">
+                                <div class="studio-tool-rail-section-label">EDIT</div>
+                                <button class="studio-tool-rail-btn" onclick="document.getElementById('editor-upload').click()">📂 Open</button>
+                                <button class="studio-tool-rail-btn" onclick="enableTextMode()">📝 Text</button>
+                                <button class="studio-tool-rail-btn" onclick="document.getElementById('editor-img-upload').click()">🖼️ Image</button>
+                                <button class="studio-tool-rail-btn" onclick="addWhiteout()">⬜ Whiteout</button>
+                                <button class="studio-tool-rail-btn" onclick="openSignature()">🖋️ Sign</button>
+                            </div>
+                            <div class="studio-tool-rail-section">
+                                <div class="studio-tool-rail-section-label">TOOLS</div>
+                                <button class="studio-tool-rail-btn" onclick="toggleOcrPanel()">🔍 OCR</button>
+                            </div>
+                        </aside>
+                        
+                        <div class="studio-shell-canvas" id="editor-workspace">
+                            <div class="studio-empty-state" id="empty-state">
+                                <h2 style="color:#475569;">Drop a PDF to get started</h2>
+                                <p style="color:#64748b;">All processing happens locally. Your files never leave your device.</p>
+                                <button class="studio-upload-btn" onclick="document.getElementById('editor-upload').click()" style="background:#3b82f6; color:white; padding:12px 24px; border:none; border-radius:6px; cursor:pointer; margin-top:20px;">Upload PDF</button>
+                                <input type="file" id="editor-upload" accept="application/pdf" style="display:none;">
+                                <input type="file" id="editor-img-upload" accept="image/png, image/jpeg, image/webp" style="display:none;" onchange="handleImageInsert(this)">
+                            </div>
+                            <div id="editor-canvas-wrapper" style="position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.2); background:white; margin: 20px auto;"></div>
+                        </div>
+
+                        <aside class="studio-side-panel" id="ocr-panel" style="display: none; width:300px; background:#1e293b; border-left:1px solid #334155; padding:20px; color:white; flex-direction:column; overflow-y:auto; text-align:left;">
+                            <h3 style="margin-top:0; margin-bottom:15px; color:white;">Page OCR</h3>
+                            <select id="editor-ocr-language" style="width:100%; padding:10px; margin-bottom:15px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;">
+                                <option value="eng">English</option>
+                                <option value="spa">Spanish</option>
+                                <option value="fra">French</option>
+                                <option value="deu">German</option>
+                                <option value="ita">Italian</option>
+                                <option value="hin">Hindi</option>
+                            </select>
+                            <button onclick="runEditorOCR()" style="width:100%; padding:10px; background:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:15px; margin-top:0;">Extract Text from Canvas</button>
+                            <p id="editor-ocr-result" style="white-space:pre-wrap; font-size:13px; border:1px solid #334155; padding:15px; background:#0f172a; border-radius:6px; min-height:150px; color:#cbd5e1;"></p>
+                        </aside>
+                    </main>
+                </div>
+
+                <div id="floating-toolbar" style="display: none; position:fixed; background:white; border:1px solid #ccc; padding:8px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); gap:8px; z-index:2000;">
+                    <input type="color" id="text-color" value="#000000" onchange="updateFormat()" style="width:30px; height:30px; padding:0; border:none; margin:0;">
+                    <input type="number" id="text-size" value="24" onchange="updateFormat()" style="width:60px; padding:4px; border:1px solid #ddd; border-radius:4px; margin:0;">
+                    <select id="text-font" onchange="updateFormat()" style="padding:4px; border:1px solid #ddd; border-radius:4px; margin:0; width:auto;">
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                    </select>
+                    <button onclick="deleteActiveElement()" style="background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; padding:4px 12px; margin:0;">🗑️</button>
+                </div>
+            </div>
 </div>
 <div id="editor-workspace">
 <div id="editor-canvas-wrapper"></div>
