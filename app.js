@@ -2,18 +2,25 @@ window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
 
 function handleRoute() {
-const hash = window.location.hash || '#dashboard';
+    const hash = window.location.hash || '#dashboard';
+    
+    document.getElementById('dashboard').style.display = hash === '#dashboard' ? 'block' : 'none';
+    
+    document.getElementById('nav-bar').style.display = (hash === '#dashboard' || hash === '#add-text-sec') ? 'none' : 'block';
+    
+    const sections = document.querySelectorAll('.tool-section');
+    sections.forEach(sec => sec.style.display = 'none');
+    
+    if (hash !== '#dashboard') {
+        const target = document.getElementById(hash.substring(1));
+        if (target) target.style.display = 'block';
+    }
 
-document.getElementById('dashboard').style.display = hash === '#dashboard' ? 'block' : 'none';
-document.getElementById('nav-bar').style.display = hash === '#dashboard' ? 'none' : 'block';
-
-const sections = document.querySelectorAll('.tool-section');
-sections.forEach(sec => sec.style.display = 'none');
-
-if (hash !== '#dashboard') {
-const target = document.getElementById(hash.substring(1));
-if (target) target.style.display = 'block';
-}
+    if (hash === '#add-text-sec') {
+        document.body.style.padding = '0';
+    } else {
+        document.body.style.padding = '40px 20px';
+    }
 }
 
 function goHome() {
