@@ -464,3 +464,72 @@ function addWhiteout() {
     visualElements.push(box);
     document.querySelectorAll('.studio-tool-rail-btn').forEach(btn => btn.classList.remove('active'));
 }
+
+let isDrawingSig = false;
+
+function openSignature() {
+    document.getElementById('sig-modal').style.display = 'block';
+    clearSignature();
+}
+
+function closeSignature() {
+    document.getElementById('sig-modal').style.display = 'none';
+}
+
+function clearSignature() {
+    const sigCanvas = document.getElementById('sig-canvas');
+    if (sigCanvas) {
+        const ctx = sigCanvas.getContext('2d');
+        ctx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+    }
+}
+
+const sigCanvas = document.getElementById('sig-canvas');
+if (sigCanvas) {
+    const ctx = sigCanvas.getContext('2d');
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#000';
+    
+    function getPos(e) {
+        const rect = sigCanvas.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        };
+    }
+    
+    sigCanvas.addEventListener('mousedown', function(e) {
+        isDrawingSig = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    });
+    
+    sigCanvas.addEventListener('mousemove', function(e) {
+        if (isDrawingSig) {
+            const pos = getPos(e);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+        }
+    });
+    
+    sigCanvas.addEventListener('mouseup', () => isDrawingSig = false);
+    sigCanvas.addEventListener('mouseout', () => isDrawingSig = false);
+}
+
+function insertSignature() {
+    const dataUrl = sigCanvas.toDataURL('image/png');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'draggable-image';
+    wrapper.style.left = '50px';
+    wrapper.style.top = '50px';
+    wrapper.style.width = '200px';
+    wrapper.style.height = '100px';
+    wrapper.style.backgroundImage = `url(${dataUrl})`;
+    wrapper.setAttribute('data-src', dataUrl);
+    wrapper.tabIndex = 0;
+    
+    document.getElementById('editor-canvas-wrapper').appendChild(wrapper);
+    visualElements.push(wrapper);
+    closeSignature();
+}
