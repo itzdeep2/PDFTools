@@ -292,9 +292,20 @@ document.addEventListener('focusin', function(e) {
 });
 
 function updateFormat() {
-    if (activeElement) {
-        activeElement.style.color = document.getElementById('text-color').value;
-        activeElement.style.fontSize = document.getElementById('text-size').value + 'px';
+    if (activeElement && activeElement.classList.contains('draggable-text')) {
+        const newColor = document.getElementById('text-color').value;
+        const newSize = document.getElementById('text-size').value + 'px';
+        const newFont = document.getElementById('text-font').value;
+        
+        activeElement.style.color = newColor;
+        activeElement.style.fontSize = newSize;
+        activeElement.style.fontFamily = newFont;
+        
+        Array.from(activeElement.children).forEach(child => {
+            child.style.color = newColor;
+            child.style.fontSize = newSize;
+            child.style.fontFamily = newFont;
+        });
     }
 }
 
