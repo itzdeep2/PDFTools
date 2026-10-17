@@ -233,41 +233,55 @@ document.getElementById('editor-canvas-wrapper').addEventListener('click', funct
 });
 
 let isDragging = false;
-let dragTarget = null;
-let startX, startY, initialX, initialY;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
 
 document.addEventListener('mousedown', function(e) {
-if (e.target.classList.contains('draggable-text')) {
-if (document.activeElement === e.target) {
-return;
-}
-isDragging = true;
-dragTarget = e.target;
-startX = e.clientX;
-startY = e.clientY;
-initialX = parseInt(dragTarget.style.left, 10) || 0;
-initialY = parseInt(dragTarget.style.top, 10) || 0;
-e.preventDefault(); 
-}
+    if (e.target.classList.contains('draggable-text') || e.target.classList.contains('draggable-image') || e.target.classList.contains('whiteout-box')) {
+        
+        const rect = e.target.getBoundingClientRect();
+        if ((e.target.classList.contains('draggable-image') || e.target.classList.contains('whiteout-box')) && 
+            e.clientX > rect.right - 20 && e.clientY > rect.bottom - 20) {
+            return; 
+        }
+
+        if (e.target.classList.contains('draggable-text') && document.activeElement === e.target) {
+            return; 
+        }
+
+        isDragging = true;
+        activeElement = e.target;
+        
+        const wrapperRect = document.getElementById('editor-canvas-wrapper').getBoundingClientRect();
+        const elementLeft = parseInt(activeElement.style.left, 10) || 0;
+        const elementTop = parseInt(activeElement.style.top, 10) || 0;
+        
+        dragOffsetX = e.clientX - wrapperRect.left - elementLeft;
+        dragOffsetY = e.clientY - wrapperRect.top - elementTop;
+        
+        e.preventDefault(); 
+    }
 });
 
 document.addEventListener('mousemove', function(e) {
     if (isDragging && activeElement) {
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-        activeElement.style.left = (initialX + dx) + 'px';
-        activeElement.style.top = (initialY + dy) + 'px';
+        const wrapperRect = document.getElementById('editor-canvas-wrapper').getBoundingClientRect();
+        const newX = e.clientX - wrapperRect.left - dragOffsetX;
+        const newY = e.clientY - wrapperRect.top - dragOffsetY;
+        
+        activeElement.style.left = newX + 'px';
+        activeElement.style.top = newY + 'px';
+        
         if (activeElement.classList.contains('draggable-text') && typeof showFloatingToolbar === 'function') {
             showFloatingToolbar(activeElement);
         }
     }
 });
 
-document.addEventListener('mouseup', function() {
-isDragging = false;
-dragTarget = null;
+document.addEventListener('mouseup', () => {
+    isDragging = false;
 });
-let activeElement = null;
+
 
 document.addEventListener('focusin', function(e) {
     if (e.target.classList.contains('draggable-text')) {
