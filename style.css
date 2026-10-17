@@ -256,4 +256,7 @@ border: 1px dashed #0282e5;
     border: 2px dashed transparent;
     cursor: move;
 }
-.draggable-image:hover, .draggable-image:focus { border: 2px dashed #3b82f6; }
+
+.draggable-image:hover, .draggable-image:focus {
+    border: 2px dashed #3b82f6;
+}
