@@ -272,7 +272,7 @@ document.addEventListener('mousemove', function(e) {
         activeElement.style.left = newX + 'px';
         activeElement.style.top = newY + 'px';
         
-        if (activeElement.classList.contains('draggable-text') && typeof showFloatingToolbar === 'function') {
+        if (typeof showFloatingToolbar === 'function') {
             showFloatingToolbar(activeElement);
         }
     }
@@ -419,15 +419,20 @@ async function runEditorOCR() {
 
 function showFloatingToolbar(el) {
     const tb = document.getElementById('floating-toolbar');
+    const textTools = document.getElementById('text-tools');
     const rect = el.getBoundingClientRect();
+    
     tb.style.display = 'flex';
-    tb.style.top = (rect.top - 50) + 'px';
+    tb.style.top = (rect.top - 55) + 'px';
     tb.style.left = rect.left + 'px';
 
-    if (el.tagName.toLowerCase() === 'div' && el.classList.contains('draggable-text')) {
+    if (el.classList.contains('draggable-text') && !el.classList.contains('whiteout-box')) {
+        textTools.style.display = 'flex';
         document.getElementById('text-color').value = rgb2hex(el.style.color);
         document.getElementById('text-size').value = parseInt(el.style.fontSize) || 24;
         document.getElementById('text-font').value = el.style.fontFamily || 'Arial';
+    } else {
+        textTools.style.display = 'none';
     }
 }
 

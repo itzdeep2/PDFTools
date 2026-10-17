@@ -159,17 +159,18 @@
                         </aside>
                     </main>
                 </div>
-
-                <div id="floating-toolbar" style="display: none; position:fixed; background:white; border:1px solid #ccc; padding:8px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); gap:8px; z-index:2000;">
-                    <input type="color" id="text-color" value="#000000" onchange="updateFormat()" style="width:30px; height:30px; padding:0; border:none; margin:0;">
-                    <input type="number" id="text-size" value="24" onchange="updateFormat()" style="width:60px; padding:4px; border:1px solid #ddd; border-radius:4px; margin:0;">
-                    <select id="text-font" onchange="updateFormat()" style="padding:4px; border:1px solid #ddd; border-radius:4px; margin:0; width:auto;">
-                        <option value="Arial">Arial</option>
-                        <option value="Times New Roman">Times New Roman</option>
-                        <option value="Courier New">Courier New</option>
-                    </select>
-                    <button onclick="deleteActiveElement()" style="background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; padding:4px 12px; margin:0;">🗑️</button>
-                </div>
+                 <div id="floating-toolbar" style="display: none; position:fixed; background:white; border:1px solid #ccc; padding:8px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); gap:8px; z-index:2000; align-items:center;">
+                    <span id="text-tools" style="display: flex; gap: 8px; align-items:center;">
+                        <input type="color" id="text-color" value="#000000" onchange="updateFormat()" style="width:30px; height:30px; padding:0; border:none; margin:0; cursor:pointer;">
+                        <input type="number" id="text-size" value="24" onchange="updateFormat()" style="width:60px; padding:4px; border:1px solid #ddd; border-radius:4px; margin:0;">
+                        <select id="text-font" onchange="updateFormat()" style="padding:4px; border:1px solid #ddd; border-radius:4px; margin:0; width:auto;">
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                        </select>
+                    </span>
+                    <button onclick="deleteActiveElement()" class="delete-btn" style="background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; padding:6px 12px; margin:0; font-weight:bold;">🗑️ Delete</button>
+                 </div>
             </div>
 </div>
 <div id="editor-workspace">
