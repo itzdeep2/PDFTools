@@ -432,3 +432,24 @@ function deleteActiveElement() {
         activeElement = null;
     }
 }
+
+function addWhiteout() {
+    const box = document.createElement('div');
+    box.className = 'whiteout-box';
+    box.style.left = '50px';
+    box.style.top = '50px';
+    box.style.width = '200px';
+    box.style.height = '50px';
+    box.style.backgroundColor = '#ffffff';
+    box.style.border = '1px solid #999';
+    box.style.position = 'absolute';
+    box.style.resize = 'both';
+    box.style.overflow = 'hidden';
+    box.style.cursor = 'move';
+    box.style.zIndex = '100';
+    box.tabIndex = 0;
+    
+    document.getElementById('editor-canvas-wrapper').appendChild(box);
+    visualElements.push(box);
+    document.querySelectorAll('.studio-tool-rail-btn').forEach(btn => btn.classList.remove('active'));
+}
