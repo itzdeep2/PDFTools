@@ -286,7 +286,7 @@ border: 1px dashed #0282e5;
 .resize-node[data-dir="e"]  { top: calc(50% - 6px); right: -6px; cursor: ew-resize; }
 .resize-node[data-dir="w"]  { top: calc(50% - 6px); left: -6px; cursor: ew-resize; }
 
-##open-design-sec {
+#open-design-sec {
     position: fixed;
     top: 0;
     left: 0;
@@ -338,6 +338,7 @@ border: 1px dashed #0282e5;
     font-size: 16px;
     background: -webkit-linear-gradient(45deg, #00f2fe, #4facfe);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
