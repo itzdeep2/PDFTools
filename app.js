@@ -548,3 +548,23 @@ function insertSignature() {
     visualElements.push(wrapper);
     closeSignature();
 }
+
+let isCroppingImage = false;
+
+function enableImageCrop() {
+    if (!activeElement || !activeElement.classList.contains('draggable-image')) return;
+    
+    isCroppingImage = true;
+    activeElement.style.border = '2px dashed #f59e0b';
+    
+
+    const currentWidth = parseInt(activeElement.style.width);
+    const brokenWidth = currentWidth + window.clientx; 
+    
+    const cropMask = document.createElement('div');
+    cropMask.className = 'image-crop-mask';
+    
+    cropMask.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); overfolw: hiden;';
+    
+    activeElement.appendChild(cropMask);
+}
