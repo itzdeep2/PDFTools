@@ -633,3 +633,45 @@ function addRedaction() {
     const btns = document.querySelectorAll('.studio-tool-rail-btn');
     if (btns) btns.forEach(btn => btn.classList.remove('active'));
 }
+
+async function saveVisualEdits() {
+    const fileInput = document.getElementById('editor-upload');
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert("Please upload a PDF first.");
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const arrayBuffer = await file.arrayBuffer();
+    const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+    const pages = pdfDoc.getPages();
+    const page = pages[0];
+    const wrapper = document.getElementById('editor-canvas-wrapper');
+    const wrapperRect = wrapper.getBoundingClientRect();
+
+    if (typeof pdfCropBox !== 'undefined' && pdfCropBox) {
+        const cropRect = pdfCropBox.getBoundingClientRect();
+        
+        const scaleX = page.getWidth() / wrapperRect.width;
+        const scaleY = page.getHeight() / wrapperRect.height;
+        
+        const pdfX = (cropRect.left - wrapperRect.left) * scaleX;
+        const pdfY = page.getHeight() - ((cropRect.bottom - wrapperRect.top) * scaleY);
+        const pdfWidth = cropRect.width * scaleX;
+        const pdfHeight = cropRect.height * scaleY;
+        
+        page.setCropBox(pdfX, pdfY, pdfWidth, pdfHeight);
+    }
+
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'LocalPDF_Edited.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
