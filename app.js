@@ -449,28 +449,6 @@ function deleteActiveElement() {
     }
 }
 
-function addWhiteout() {
-    const box = document.createElement('div');
-    box.className = 'whiteout-box';
-    box.style.left = '50px';
-    box.style.top = '50px';
-    box.style.width = '200px';
-    box.style.height = '50px';
-    box.style.backgroundColor = '#ffffff';
-    box.style.border = '1px solid #999';
-    box.style.position = 'absolute';
-    box.style.resize = 'both';
-    box.style.overflow = 'hidden';
-    box.style.cursor = 'move';
-    box.style.zIndex = '100';
-    box.tabIndex = 0;
-    
-    document.getElementById('editor-canvas-wrapper').appendChild(box);
-    visualElements.push(box);
-    document.querySelectorAll('.studio-tool-rail-btn').forEach(btn => btn.classList.remove('active'));
-}
-
-
 let isDrawingSig = false;
 
 function openSignature() {
@@ -613,27 +591,6 @@ function executePdfCrop() {
     }
 }
 
-function addRedaction() {
-    const box = document.createElement('div');
-    box.className = 'whiteout-box redact-box';
-    box.style.left = '100px';
-    box.style.top = '100px';
-    box.style.width = '150px';
-    box.style.height = '20px';
-    box.style.backgroundColor = '#000000';
-    box.style.position = 'absolute';
-    box.style.resize = 'both';
-    box.style.overflow = 'hidden';
-    box.style.cursor = 'move';
-    box.style.zIndex = '100';
-    box.tabIndex = 0;
-    
-    document.getElementById('editor-canvas-wrapper').appendChild(box);
-    visualElements.push(box);
-    const btns = document.querySelectorAll('.studio-tool-rail-btn');
-    if (btns) btns.forEach(btn => btn.classList.remove('active'));
-}
-
 async function saveVisualEdits() {
     const fileInput = document.getElementById('editor-upload');
     if (!fileInput.files || fileInput.files.length === 0) {
@@ -674,4 +631,42 @@ async function saveVisualEdits() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+function addWhiteout() {
+    const box = document.createElement('div');
+    box.className = 'whiteout-box';
+    box.style.left = '50px';
+    box.style.top = '50px';
+    box.style.width = '200px';
+    box.style.height = '50px';
+    box.style.backgroundColor = '#ffffff';
+    box.style.position = 'absolute';
+    box.style.overflow = 'visible';
+    box.style.cursor = 'move';
+    box.style.zIndex = '100';
+    box.tabIndex = 0;
+    
+    document.getElementById('editor-canvas-wrapper').appendChild(box);
+    visualElements.push(box);
+    document.querySelectorAll('.studio-tool-rail-btn').forEach(btn => btn.classList.remove('active'));
+}
+
+function addRedaction() {
+    const box = document.createElement('div');
+    box.className = 'whiteout-box redact-box';
+    box.style.left = '100px';
+    box.style.top = '100px';
+    box.style.width = '150px';
+    box.style.height = '20px';
+    box.style.backgroundColor = '#000000';
+    box.style.position = 'absolute';
+    box.style.overflow = 'visible';
+    box.style.cursor = 'move';
+    box.style.zIndex = '100';
+    box.tabIndex = 0;
+    
+    document.getElementById('editor-canvas-wrapper').appendChild(box);
+    visualElements.push(box);
+    document.querySelectorAll('.studio-tool-rail-btn').forEach(btn => btn.classList.remove('active'));
 }
