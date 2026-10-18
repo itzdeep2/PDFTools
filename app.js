@@ -612,3 +612,24 @@ function executePdfCrop() {
         if (btn) btn.remove();
     }
 }
+
+function addRedaction() {
+    const box = document.createElement('div');
+    box.className = 'whiteout-box redact-box';
+    box.style.left = '100px';
+    box.style.top = '100px';
+    box.style.width = '150px';
+    box.style.height = '20px';
+    box.style.backgroundColor = '#000000';
+    box.style.position = 'absolute';
+    box.style.resize = 'both';
+    box.style.overflow = 'hidden';
+    box.style.cursor = 'move';
+    box.style.zIndex = '100';
+    box.tabIndex = 0;
+    
+    document.getElementById('editor-canvas-wrapper').appendChild(box);
+    visualElements.push(box);
+    const btns = document.querySelectorAll('.studio-tool-rail-btn');
+    if (btns) btns.forEach(btn => btn.classList.remove('active'));
+}
