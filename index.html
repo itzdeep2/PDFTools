@@ -47,6 +47,56 @@
 <h3>Edit PDF</h3>
 <p>Visual editor & signature</p>
 </a>
+<div class="tool-section" id="open-design-sec">
+                <div class="design-app-layout">
+                    <header class="design-top-nav">
+                        <div class="design-logo">
+                            <button type="button" class="design-nav-back" onclick="goHome()">← Dashboard</button>
+                            <span class="design-logo-title">OpenDesign</span>
+                        </div>
+                        <div class="design-toolbar" id="design-context-toolbar">
+                            <input type="color" id="design-color" value="#000000">
+                            <input type="number" id="design-size" value="48">
+                            <select id="design-font">
+                                <option value="Arial">Arial</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                            </select>
+                            <button type="button" onclick="deleteActiveElement()" class="design-delete-btn">🗑️</button>
+                        </div>
+                        <div class="design-nav-actions">
+                            <button type="button" class="design-nav-btn">Export Design</button>
+                        </div>
+                    </header>
+                    <main class="design-main-shell">
+                        <aside class="design-sidebar">
+                            <div class="design-tab" onclick="addDesignText()">
+                                <span style="font-size:20px; font-weight:bold;">T</span>
+                                <span>Text</span>
+                            </div>
+                            <div class="design-tab" onclick="document.getElementById('design-upload').click()">
+                                <span style="font-size:20px;">🖼️</span>
+                                <span>Media</span>
+                            </div>
+                            <div class="design-tab" onclick="addDesignShape()">
+                                <span style="font-size:20px;">⬛</span>
+                                <span>Shapes</span>
+                            </div>
+                            <input type="file" id="design-upload" accept="image/*,application/pdf" style="display:none;" onchange="handleDesignUpload(this)">
+                        </aside>
+                        
+                        <section class="design-canvas-area" id="design-workspace">
+                            <div id="design-canvas-wrapper"></div>
+                        </section>
+                        
+                        <aside class="design-right-panel">
+                            <div class="design-panel-header">Layers</div>
+                            <div id="design-layers-list">
+                                <div style="padding: 15px; color: #888; font-size: 12px; text-align: center;">No layers yet</div>
+                            </div>
+                        </aside>
+                    </main>
+                </div>
+            </div>
 <a href="#protect-sec" class="card">
 <div class="card-icon">🔒</div>
 <h3>Protect PDF</h3>
