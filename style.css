@@ -260,3 +260,28 @@ border: 1px dashed #0282e5;
 .draggable-image:hover, .draggable-image:focus {
     border: 2px dashed #3b82f6;
 }
+
+.whiteout-box, .redact-box, .draggable-image {
+    resize: none !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.resize-node {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border: 2px solid #3b82f6;
+    border-radius: 50%;
+    z-index: 1000;
+}
+
+.resize-node[data-dir="nw"] { top: -6px; left: -6px; cursor: nwse-resize; }
+.resize-node[data-dir="ne"] { top: -6px; right: -6px; cursor: nesw-resize; }
+.resize-node[data-dir="sw"] { bottom: -6px; left: -6px; cursor: nesw-resize; }
+.resize-node[data-dir="se"] { bottom: -6px; right: -6px; cursor: nwse-resize; }
+.resize-node[data-dir="n"]  { top: -6px; left: calc(50% - 6px); cursor: ns-resize; }
+.resize-node[data-dir="s"]  { bottom: -6px; left: calc(50% - 6px); cursor: ns-resize; }
+.resize-node[data-dir="e"]  { top: calc(50% - 6px); right: -6px; cursor: ew-resize; }
+.resize-node[data-dir="w"]  { top: calc(50% - 6px); left: -6px; cursor: ew-resize; }
