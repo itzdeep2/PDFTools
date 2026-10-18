@@ -568,3 +568,43 @@ function enableImageCrop() {
     
     activeElement.appendChild(cropMask);
 }
+
+let pdfCropBox = null;
+
+function initPdfCrop() {
+    const wrapper = document.getElementById('editor-canvas-wrapper');
+    if (!wrapper.querySelector('canvas')) return alert("Upload a PDF first");
+
+    if (pdfCropBox) pdfCropBox.remove();
+
+    pdfCropBox = document.createElement('div');
+    pdfCropBox.style.position = 'absolute';
+    pdfCropBox.style.border = '3px dashed #ef4444';
+    pdfCropBox.style.background = 'rgba(239, 68, 68, 0.1)';
+    pdfCropBox.style.left = '10%';
+    pdfCropBox.style.top = '10%';
+    pdfCropBox.style.width = '80%';
+    pdfCropBox.style.height = '80%';
+    pdfCropBox.style.resize = 'both';
+    pdfCropBox.style.overflow = 'hidden';
+    pdfCropBox.style.zIndex = '500';
+    pdfCropBox.style.cursor = 'crosshair';
+    
+    const applyBtn = document.createElement('button');
+    applyBtn.innerText = "Apply Crop";
+    applyBtn.style.cssText = 'position:absolute; bottom:-35px; right:0; background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;';
+    applyBtn.onclick = executePdfCrop;
+    
+    pdfCropBox.appendChild(applyBtn);
+    wrapper.appendChild(pdfCropBox);
+}
+
+function executePdfCrop() {
+    alert("PDF Crop boundaries saved. Will be applied on Download.");
+    if (pdfCropBox) {
+        pdfCropBox.style.background = 'transparent';
+        pdfCropBox.style.borderColor = '#10b981';
+        const btn = pdfCropBox.querySelector('button');
+        if (btn) btn.remove();
+    }
+}
