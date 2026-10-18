@@ -6,7 +6,7 @@ function handleRoute() {
     
     document.getElementById('dashboard').style.display = hash === '#dashboard' ? 'block' : 'none';
     
-    document.getElementById('nav-bar').style.display = (hash === '#dashboard' || hash === '#add-text-sec') ? 'none' : 'block';
+    document.getElementById('nav-bar').style.display = (hash === '#dashboard' || hash === '#add-text-sec' || hash === '#open-design-sec') ? 'none' : 'block';
     
     const sections = document.querySelectorAll('.tool-section');
     sections.forEach(sec => sec.style.display = 'none');
@@ -16,7 +16,7 @@ function handleRoute() {
         if (target) target.style.display = 'block';
     }
 
-    if (hash === '#add-text-sec') {
+    if (hash === '#add-text-sec' || hash === '#open-design-sec') {
         document.body.style.padding = '0';
     } else {
         document.body.style.padding = '40px 20px';
@@ -688,3 +688,62 @@ document.addEventListener('mouseup', () => {
     isDragging = false;
     isResizing = false;
 });
+
+function addDesignText() {
+    const el = document.createElement('div');
+    el.contentEditable = true;
+    el.innerText = 'Add a heading';
+    el.className = 'draggable-text';
+    el.style.left = '50px';
+    el.style.top = '50px';
+    el.style.color = '#000000';
+    el.style.fontSize = '64px';
+    el.style.fontFamily = 'Arial';
+    el.style.fontWeight = 'bold';
+    el.style.position = 'absolute';
+    el.style.zIndex = '100';
+    
+    document.getElementById('design-canvas-wrapper').appendChild(el);
+    activeElement = el;
+    attachResizeNodes(el);
+}
+
+function addDesignShape() {
+    const el = document.createElement('div');
+    el.className = 'draggable-image';
+    el.style.left = '100px';
+    el.style.top = '100px';
+    el.style.width = '200px';
+    el.style.height = '200px';
+    el.style.backgroundColor = '#cccccc';
+    el.style.position = 'absolute';
+    el.style.zIndex = '100';
+    
+    document.getElementById('design-canvas-wrapper').appendChild(el);
+    activeElement = el;
+    attachResizeNodes(el);
+}
+
+function handleDesignUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const el = document.createElement('div');
+        el.className = 'draggable-image';
+        el.style.left = '50px';
+        el.style.top = '50px';
+        el.style.width = '400px';
+        el.style.height = '300px';
+        el.style.backgroundImage = `url(${e.target.result})`;
+        el.style.backgroundSize = '100% 100%';
+        el.style.position = 'absolute';
+        el.style.zIndex = '100';
+        
+        document.getElementById('design-canvas-wrapper').appendChild(el);
+        activeElement = el;
+        attachResizeNodes(el);
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+}
