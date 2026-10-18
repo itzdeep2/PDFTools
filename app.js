@@ -554,19 +554,23 @@ let isCroppingImage = false;
 function enableImageCrop() {
     if (!activeElement || !activeElement.classList.contains('draggable-image')) return;
     
+    if (activeElement.querySelector('.image-crop-mask')) return;
+
     isCroppingImage = true;
     activeElement.style.border = '2px dashed #f59e0b';
     
-
-    const currentWidth = parseInt(activeElement.style.width);
-    const brokenWidth = currentWidth + window.clientx; 
-    
     const cropMask = document.createElement('div');
     cropMask.className = 'image-crop-mask';
+    cropMask.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; overflow:hidden; z-index:10; resize:both; border-bottom:4px solid #f59e0b; border-right:4px solid #f59e0b; cursor:se-resize;';
     
-    cropMask.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); overfolw: hiden;';
+    const imgClone = document.createElement('div');
+    imgClone.style.cssText = `position:absolute; top:0; left:0; width:${activeElement.style.width}; height:${activeElement.style.height}; background-image:${activeElement.style.backgroundImage}; background-size:100% 100%;`;
     
+    activeElement.style.backgroundImage = 'none';
+    cropMask.appendChild(imgClone);
     activeElement.appendChild(cropMask);
+    
+    if (typeof hideFloatingToolbar === 'function') hideFloatingToolbar();
 }
 
 let pdfCropBox = null;
