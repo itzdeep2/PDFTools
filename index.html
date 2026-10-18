@@ -218,7 +218,7 @@
                         </aside>
                     </main>
                 </div>
-                 <div id="floating-toolbar" style="display: none; position:fixed; background:white; border:1px solid #ccc; padding:8px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); gap:8px; z-index:2000; align-items:center;">
+                <div id="floating-toolbar" style="display: none; position:fixed; background:white; border:1px solid #ccc; padding:8px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); gap:8px; z-index:2000; align-items:center;">
                     <span id="text-tools" style="display: flex; gap: 8px; align-items:center;">
                         <input type="color" id="text-color" value="#000000" onchange="updateFormat()" style="width:30px; height:30px; padding:0; border:none; margin:0; cursor:pointer;">
                         <input type="number" id="text-size" value="24" onchange="updateFormat()" style="width:60px; padding:4px; border:1px solid #ddd; border-radius:4px; margin:0;">
@@ -230,9 +230,59 @@
                     </span>
                     <button onclick="enableImageCrop()" style="background:#f59e0b; color:white; border:none; border-radius:4px; cursor:pointer; padding:6px 12px; margin:0; font-weight:bold; margin-right:8px;">✂️Crop</button>
                     <button onclick="deleteActiveElement()" class="delete-btn" style="background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; padding:6px 12px; margin:0; font-weight:bold;">🗑️ Delete</button>
-                 </div>
+                </div>
             </div>
-</div>
+
+            <div class="tool-section" id="open-design-sec">
+                <div class="design-app-layout">
+                    <header class="design-top-nav">
+                        <div class="design-logo">
+                            <button type="button" class="design-nav-back" onclick="goHome()">← Dashboard</button>
+                            <span class="design-logo-title">OpenDesign</span>
+                        </div>
+                        <div class="design-toolbar" id="design-context-toolbar">
+                            <input type="color" id="design-color" value="#000000">
+                            <input type="number" id="design-size" value="48">
+                            <select id="design-font">
+                                <option value="Arial">Arial</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                            </select>
+                            <button type="button" onclick="deleteActiveElement()" class="design-delete-btn">🗑️</button>
+                        </div>
+                        <div class="design-nav-actions">
+                            <button type="button" class="design-nav-btn">Export Design</button>
+                        </div>
+                    </header>
+                    <main class="design-main-shell">
+                        <aside class="design-sidebar">
+                            <div class="design-tab" onclick="addDesignText()">
+                                <span style="font-size:20px; font-weight:bold;">T</span>
+                                <span>Text</span>
+                            </div>
+                            <div class="design-tab" onclick="document.getElementById('design-upload').click()">
+                                <span style="font-size:20px;">🖼️</span>
+                                <span>Media</span>
+                            </div>
+                            <div class="design-tab" onclick="addDesignShape()">
+                                <span style="font-size:20px;">⬛</span>
+                                <span>Shapes</span>
+                            </div>
+                            <input type="file" id="design-upload" accept="image/*,application/pdf" style="display:none;" onchange="handleDesignUpload(this)">
+                        </aside>
+                        
+                        <section class="design-canvas-area" id="design-workspace">
+                            <div id="design-canvas-wrapper"></div>
+                        </section>
+                        
+                        <aside class="design-right-panel">
+                            <div class="design-panel-header">Layers</div>
+                            <div id="design-layers-list">
+                                <div style="padding: 15px; color: #888; font-size: 12px; text-align: center;">No layers yet</div>
+                            </div>
+                        </aside>
+                    </main>
+                </div>
+            </div>
 <div id="editor-workspace">
 <div id="editor-canvas-wrapper"></div>
 </div>
