@@ -774,3 +774,10 @@ document.addEventListener('click', (e) => {
         playClickSound();
     }
 });
+function changeTheme(theme) {
+    if (theme === 'system') {
+        document.body.removeAttribute('data-theme');
+    } else {
+        document.body.setAttribute('data-theme', theme);
+    }
+}
