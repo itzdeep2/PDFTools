@@ -644,11 +644,11 @@ async function executeConversion() {
         const page = pdfDoc.addPage([img.width, img.height]);
         page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
         
-        const pdfBytes = await pdfDoc.seve();
+        const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'Converted.pdf';
+        a.download = `Converted_${file.name.split('.')[0]}.pdf`;
         a.click();
     } else if ((target === 'png' || target === 'jpeg') && file.type === 'application/pdf') {
         const arrayBuffer = await file.arrayBuffer();
@@ -664,10 +664,10 @@ async function executeConversion() {
         const imgData = canvas.toDataURL(`image/${target}`);
         const a = document.createElement('a');
         a.href = imgData;
-        a.download = `Converted.${target}`;
+        a.download = `Converted_Page1.${target}`;
         a.click();
     } else {
-        alert(`Advanced format ${target.toUpperCase()} requires backend rendering.`);
+        alert(`Advanced format ${target.toUpperCase()} requires backend rendering. Client-side supports Image to PDF and PDF to Image.`);
     }
 }
 
