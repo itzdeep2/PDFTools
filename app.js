@@ -632,3 +632,51 @@ function executeConversion() {
     const target = document.getElementById('convert-target-format').value;
     alert(`File sent to conversion engine. Target format: ${target.toUpperCase()}`);
 }
+
+function handleConvertUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const optionsContainer = document.getElementById('convert-options-container');
+    const select = document.getElementById('convert-target-format');
+    const typeLabel = document.getElementById('convert-detected-type');
+    
+    select.innerHTML = '';
+    typeLabel.innerText = file.name;
+    
+    const type = file.type.toLowerCase();
+    let targets = [];
+    
+    if (type.includes('image')) {
+        targets = ['PDF', 'PNG', 'JPEG', 'WEBP', 'GIF'];
+    } else if (type.includes('pdf')) {
+        targets = ['Word (DOCX)', 'Images (PNG)', 'Images (JPG)', 'Text (TXT)'];
+    } else if (type.includes('audio')) {
+        targets = ['MP3', 'WAV', 'OGG', 'AAC'];
+    } else if (type.includes('video')) {
+        targets = ['MP4', 'GIF', 'WEBM', 'Audio (MP3)'];
+    } else if (type.includes('text')) {
+        targets = ['PDF', 'Word (DOCX)'];
+    } else {
+        targets = ['ZIP', 'PDF'];
+    }
+
+    targets.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.split(' ')[0].toLowerCase();
+        opt.innerText = t;
+        select.appendChild(opt);
+    });
+    
+    optionsContainer.style.display = 'block';
+}
+
+function executeConversion() {
+    const fileInput = document.getElementById('convert-file');
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert("Please select a file to convert.");
+        return;
+    }
+    const target = document.getElementById('convert-target-format').value;
+    alert(`File sent to conversion engine. Target format: ${target.toUpperCase()}`);
+}

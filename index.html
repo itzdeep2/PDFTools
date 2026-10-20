@@ -275,7 +275,20 @@
         </div>
     </div>
 </div>
-
+<div class="tool-section" id="convert-sec">
+    <h2>Universal Convert</h2>
+    <div class="drop-zone">
+        <input type="file" id="convert-file" onchange="handleConvertUpload(this)">
+        <p>Drop ANY file here or click to browse</p>
+    </div>
+    <div id="convert-options-container" style="display:none; margin: 20px 0; text-align:left; background:var(--card-bg); padding:20px; border-radius:12px; border:1px solid var(--border);">
+        <p style="margin-top:0; font-weight:600; color:var(--text-main);">Detected File: <span id="convert-detected-type" style="color:var(--primary);"></span></p>
+        <label style="font-weight:600; display:block; margin-bottom:10px; color:var(--text-main);">Convert To:</label>
+        <select id="convert-target-format" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-family:'Poppins', sans-serif;">
+        </select>
+    </div>
+    <button onclick="executeConversion()" style="width:100%;">Start Conversion</button>
+</div>
 <script src="app.js"></script>
 </body>
 </html>
