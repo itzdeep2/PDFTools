@@ -623,14 +623,36 @@ function handleConvertUpload(input) {
     optionsContainer.style.display = 'block';
 }
 
-function executeConversion() {
+async function executeConversion() {
     const fileInput = document.getElementById('convert-file');
-    if (!fileInput.files || fileInput.files.length === 0) {
-        alert("Please select a file to convert.");
-        return;
-    }
+    if (!fileInput.files || fileInput.files.length === 0) return alert("Select a file");
+    
+    const file = fileInput.files[0];
     const target = document.getElementById('convert-target-format').value;
-    alert(`File sent to conversion engine. Target format: ${target.toUpperCase()}`);
+    
+    if (target === 'pdf' && file.type.includes('image')) {
+        const imgBytes = await file.arrayBuffer();
+        const pdfDoc = await PDFLib.PDFDocument.create();
+        
+        let img;
+        if (file.type === 'image/jpeg') {
+            img = await pdfDoc.embedJpg(imgBytes);
+        } else {
+            img = await pdfDoc.embedPng(imgBytes);
+        }
+        
+        const page = pdfDoc.addPage([img.width, img.height]);
+        page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+        
+        const pdfBytes = await pdfDoc.seve();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'Converted.pdf';
+        a.click();
+    } else {
+        alert(`Conversion to ${target.toUpperCase()} requires backend server.`);
+    }
 }
 
 function handleConvertUpload(input) {
