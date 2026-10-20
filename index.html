@@ -72,6 +72,7 @@
         <p>Convert any file to any format</p>
     </a>
 </div>
+</div>
 <div id="tools-wrapper">
 <div class="tool-section" id="merge-sec">
     <h2>Merge PDFs</h2>
@@ -118,105 +119,105 @@
 </div>
 
 <div class="tool-section" id="add-text-sec">
-                <div class="studio-app-layout">
-                    <div class="studio-top-nav-container">
-                        <header class="studio-top-nav">
-                            <div class="studio-logo" style="display:flex; align-items:center; gap:10px;">
-                                <button onclick="goHome()" style="background:transparent; color:white; border:1px solid #334155; padding:5px 10px; border-radius:4px; cursor:pointer; margin:0;">← Dashboard</button>
-                                <span style="font-weight:bold; color:white; font-size:18px;">OpenDesign</span>
-                            </div>
-                            <div class="studio-nav-actions">
-                                <button type="button" class="studio-nav-btn" onclick="saveVisualEdits()" style="background:#3b82f6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; margin:0;">Download PDF</button>
-                            </div>
-                        </header>
-                    </div>
-                    <main class="studio-main-shell">
-                        <aside class="studio-tool-rail">
-                            <div class="studio-tool-rail-section">
-                                <div class="studio-tool-rail-section-label">EDIT</div>
-                                <button class="studio-tool-rail-btn" onclick="document.getElementById('editor-upload').click()">📂 Open</button>
-                                <button class="studio-tool-rail-btn" onclick="enableTextMode()">📝 Text</button>
-                                <button class="studio-tool-rail-btn" onclick="document.getElementById('editor-img-upload').click()">🖼️ Image</button>
-                                <button class="studio-tool-rail-btn" onclick="addWhiteout()">⬜ Whiteout</button>
-                                <button class="studio-tool-rail-btn" onclick="openSignature()">🖋️ Sign</button>
-                                <button type="button" class="studio-tool-rail-btn" onclick="addRedaction()">⬛ Redact</button>
-                                <button type="button" class="studio-tool-rail-btn" onclick="initPdfCrop()">✂️ Page Crop</button>
-                            </div>
-                            <div class="studio-tool-rail-section">
-                                <div class="studio-tool-rail-section-label">TOOLS</div>
-                                <button class="studio-tool-rail-btn" onclick="toggleOcrPanel()">🔍 OCR</button>
-                            </div>
-                        </aside>
-                        
-                        <div class="studio-shell-canvas" id="editor-workspace">
-                            <div class="studio-empty-state" id="empty-state">
-                                <h2 style="color:#475569;">Drop a PDF to get started</h2>
-                                <p style="color:#64748b;">All processing happens locally. Your files never leave your device.</p>
-                                <button class="studio-upload-btn" onclick="document.getElementById('editor-upload').click()" style="background:#3b82f6; color:white; padding:12px 24px; border:none; border-radius:6px; cursor:pointer; margin-top:20px;">Upload PDF</button>
-                                <input type="file" id="editor-upload" accept="application/pdf" style="display:none;">
-                                <input type="file" id="editor-img-upload" accept="image/png, image/jpeg, image/webp" style="display:none;" onchange="handleImageInsert(this)">
-                            </div>
-                            <div id="editor-canvas-wrapper" style="position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.2); background:white; margin: 20px auto;"></div>
-                        </div>
+    <div class="studio-app-layout">
+        <div class="studio-top-nav-container">
+            <header class="studio-top-nav">
+                <div class="studio-logo" style="display:flex; align-items:center; gap:10px;">
+                    <button onclick="goHome()" style="background:transparent; color:white; border:1px solid #334155; padding:5px 10px; border-radius:4px; cursor:pointer; margin:0;">← Dashboard</button>
+                    <span style="font-weight:bold; color:white; font-size:18px;">OpenDesign</span>
+                </div>
+                <div class="studio-nav-actions">
+                    <button type="button" class="studio-nav-btn" onclick="saveVisualEdits()" style="background:#3b82f6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; margin:0;">Download PDF</button>
+                </div>
+            </header>
+        </div>
+        <main class="studio-main-shell">
+            <aside class="studio-tool-rail">
+                <div class="studio-tool-rail-section">
+                    <div class="studio-tool-rail-section-label">EDIT</div>
+                    <button class="studio-tool-rail-btn" onclick="document.getElementById('editor-upload').click()">📂 Open</button>
+                    <button class="studio-tool-rail-btn" onclick="enableTextMode()">📝 Text</button>
+                    <button class="studio-tool-rail-btn" onclick="document.getElementById('editor-img-upload').click()">🖼️ Image</button>
+                    <button class="studio-tool-rail-btn" onclick="addWhiteout()">⬜ Whiteout</button>
+                    <button class="studio-tool-rail-btn" onclick="openSignature()">🖋️ Sign</button>
+                    <button type="button" class="studio-tool-rail-btn" onclick="addRedaction()">⬛ Redact</button>
+                    <button type="button" class="studio-tool-rail-btn" onclick="initPdfCrop()">✂️ Page Crop</button>
+                </div>
+                <div class="studio-tool-rail-section">
+                    <div class="studio-tool-rail-section-label">TOOLS</div>
+                    <button class="studio-tool-rail-btn" onclick="toggleOcrPanel()">🔍 OCR</button>
+                </div>
+            </aside>
+            
+            <div class="studio-shell-canvas" id="editor-workspace">
+                <div class="studio-empty-state" id="empty-state">
+                    <h2 style="color:#475569;">Drop a PDF to get started</h2>
+                    <p style="color:#64748b;">All processing happens locally. Your files never leave your device.</p>
+                    <button class="studio-upload-btn" onclick="document.getElementById('editor-upload').click()" style="background:#3b82f6; color:white; padding:12px 24px; border:none; border-radius:6px; cursor:pointer; margin-top:20px;">Upload PDF</button>
+                    <input type="file" id="editor-upload" accept="application/pdf" style="display:none;">
+                    <input type="file" id="editor-img-upload" accept="image/png, image/jpeg, image/webp" style="display:none;" onchange="handleImageInsert(this)">
+                </div>
+                <div id="editor-canvas-wrapper" style="position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.2); background:white; margin: 20px auto;"></div>
+            </div>
 
-                        <aside class="studio-side-panel" id="ocr-panel" style="display: none; width:300px; background:#1e293b; border-left:1px solid #334155; padding:20px; color:white; flex-direction:column; overflow-y:auto; text-align:left;">
-                            <h3 style="margin-top:0; margin-bottom:15px; color:white;">Page OCR</h3>
-                            <select id="editor-ocr-language" style="width:100%; padding:10px; margin-bottom:15px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;">
-                                <option value="eng">English</option>
-                                <option value="spa">Spanish</option>
-                                <option value="fra">French</option>
-                                <option value="deu">German</option>
-                                <option value="ita">Italian</option>
-                                <option value="hin">Hindi</option>
-                            </select>
-                            <button onclick="runEditorOCR()" style="width:100%; padding:10px; background:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:15px; margin-top:0;">Extract Text from Canvas</button>
-                            <p id="editor-ocr-result" style="white-space:pre-wrap; font-size:13px; border:1px solid #334155; padding:15px; background:#0f172a; border-radius:6px; min-height:150px; color:#cbd5e1;"></p>
-                        </aside>
-                    </main>
-                </div>
-                <div id="floating-toolbar" style="display: none; position:fixed; background:white; border:1px solid #ccc; padding:8px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); gap:8px; z-index:2000; align-items:center;">
-                    <span id="text-tools" style="display: flex; gap: 8px; align-items:center;">
-                        <input type="color" id="text-color" value="#000000" onchange="updateFormat()" style="width:30px; height:30px; padding:0; border:none; margin:0; cursor:pointer;">
-                        <input type="number" id="text-size" value="24" onchange="updateFormat()" style="width:60px; padding:4px; border:1px solid #ddd; border-radius:4px; margin:0;">
-                        <select id="text-font" onchange="updateFormat()" style="padding:4px; border:1px solid #ddd; border-radius:4px; margin:0; width:auto;">
-                            <option value="Arial">Arial</option>
-                            <option value="Times New Roman">Times New Roman</option>
-                            <option value="Courier New">Courier New</option>
-                            <option value="Helvetica">Helvetica</option>
-                            <option value="Verdana">Verdana</option>
-                            <option value="Georgia">Georgia</option>
-                            <option value="Palatino">Palatino</option>
-                            <option value="Garamond">Garamond</option>
-                            <option value="Bookman">Bookman</option>
-                            <option value="Comic Sans MS">Comic Sans MS</option>
-                            <option value="Trebuchet MS">Trebuchet MS</option>
-                            <option value="Arial Black">Arial Black</option>
-                            <option value="Impact">Impact</option>
-                            <option value="Tahoma">Tahoma</option>
-                            <option value="Century Gothic">Century Gothic</option>
-                            <option value="Lucida Sans">Lucida Sans</option>
-                            <option value="Roboto">Roboto</option>
-                            <option value="Open Sans">Open Sans</option>
-                            <option value="Lato">Lato</option>
-                            <option value="Montserrat">Montserrat</option>
-                            <option value="Raleway">Raleway</option>
-                            <option value="Merriweather">Merriweather</option>
-                            <option value="Playfair Display">Playfair Display</option>
-                            <option value="Ubuntu">Ubuntu</option>
-                            <option value="Rubik">Rubik</option>
-                            <option value="Lora">Lora</option>
-                            <option value="Oswald">Oswald</option>
-                            <option value="Nunito">Nunito</option>
-                            <option value="Droid Sans">Droid Sans</option>
-                            <option value="PT Serif">PT Serif</option>
-                            <option value="Work Sans">Work Sans</option>
-                        </select>
-                    </span>
-                    <button onclick="enableImageCrop()" style="background:#f59e0b; color:white; border:none; border-radius:4px; cursor:pointer; padding:6px 12px; margin:0; font-weight:bold; margin-right:8px;">✂️Crop</button>
-                    <button onclick="deleteActiveElement()" class="delete-btn" style="background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; padding:6px 12px; margin:0; font-weight:bold;">🗑️ Delete</button>
-                </div>
+            <aside class="studio-side-panel" id="ocr-panel" style="display: none; width:300px; background:#1e293b; border-left:1px solid #334155; padding:20px; color:white; flex-direction:column; overflow-y:auto; text-align:left;">
+                <h3 style="margin-top:0; margin-bottom:15px; color:white;">Page OCR</h3>
+                <select id="editor-ocr-language" style="width:100%; padding:10px; margin-bottom:15px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;">
+                    <option value="eng">English</option>
+                    <option value="spa">Spanish</option>
+                    <option value="fra">French</option>
+                    <option value="deu">German</option>
+                    <option value="ita">Italian</option>
+                    <option value="hin">Hindi</option>
+                </select>
+                <button onclick="runEditorOCR()" style="width:100%; padding:10px; background:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:15px; margin-top:0;">Extract Text from Canvas</button>
+                <p id="editor-ocr-result" style="white-space:pre-wrap; font-size:13px; border:1px solid #334155; padding:15px; background:#0f172a; border-radius:6px; min-height:150px; color:#cbd5e1;"></p>
+            </aside>
+        </main>
+    </div>
+    <div id="floating-toolbar" style="display: none; position:fixed; background:white; border:1px solid #ccc; padding:8px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); gap:8px; z-index:2000; align-items:center;">
+        <span id="text-tools" style="display: flex; gap: 8px; align-items:center;">
+            <input type="color" id="text-color" value="#000000" onchange="updateFormat()" style="width:30px; height:30px; padding:0; border:none; margin:0; cursor:pointer;">
+            <input type="number" id="text-size" value="24" onchange="updateFormat()" style="width:60px; padding:4px; border:1px solid #ddd; border-radius:4px; margin:0;">
+            <select id="text-font" onchange="updateFormat()" style="padding:4px; border:1px solid #ddd; border-radius:4px; margin:0; width:auto;">
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Helvetica">Helvetica</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Palatino">Palatino</option>
+                <option value="Garamond">Garamond</option>
+                <option value="Bookman">Bookman</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+                <option value="Trebuchet MS">Trebuchet MS</option>
+                <option value="Arial Black">Arial Black</option>
+                <option value="Impact">Impact</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Century Gothic">Century Gothic</option>
+                <option value="Lucida Sans">Lucida Sans</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Open Sans">Open Sans</option>
+                <option value="Lato">Lato</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Raleway">Raleway</option>
+                <option value="Merriweather">Merriweather</option>
+                <option value="Playfair Display">Playfair Display</option>
+                <option value="Ubuntu">Ubuntu</option>
+                <option value="Rubik">Rubik</option>
+                <option value="Lora">Lora</option>
+                <option value="Oswald">Oswald</option>
+                <option value="Nunito">Nunito</option>
+                <option value="Droid Sans">Droid Sans</option>
+                <option value="PT Serif">PT Serif</option>
+                <option value="Work Sans">Work Sans</option>
+            </select>
+        </span>
+        <button onclick="enableImageCrop()" style="background:#f59e0b; color:white; border:none; border-radius:4px; cursor:pointer; padding:6px 12px; margin:0; font-weight:bold; margin-right:8px;">✂️Crop</button>
+        <button onclick="deleteActiveElement()" class="delete-btn" style="background:#ef4444; color:white; border:none; border-radius:4px; cursor:pointer; padding:6px 12px; margin:0; font-weight:bold;">🗑️ Delete</button>
+    </div>
 </div>
-                
+
 <div class="tool-section" id="protect-sec">
 <h2>Protect PDF</h2>
     <div class="drop-zone">
@@ -228,16 +229,53 @@
 </div>
 
 <div class="tool-section" id="compress-sec">
-<h2>Basic Compress</h2>
-    <div class="drop-zone">
+    <h2>Advanced Compression</h2>
+    <div class="drop-zone" id="compress-drop">
         <input type="file" id="compress-file" accept="application/pdf">
-        <p>Drop files here or click to browse</p>
+        <p>Drop PDF here or click to browse</p>
     </div>
-<button onclick="compressPdf()">Compress</button>
+    <div id="compress-options" style="display:none; margin: 20px 0; text-align:left; background:var(--card-bg); padding:20px; border-radius:12px; border:1px solid var(--border);">
+        <label style="font-weight:600; display:block; margin-bottom:15px; color:var(--text-main);">Compression Level</label>
+        <input type="range" id="compress-level" min="1" max="100" value="50" style="width:100%; margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; color:var(--text-muted); font-size:12px; font-weight:600;">
+            <span>High Quality</span>
+            <span>Balanced</span>
+            <span>Smallest Size</span>
+        </div>
+    </div>
+    <button onclick="compressPdf()" style="width:100%; margin-top:10px;">Compress Document</button>
+</div>
+
+<div class="tool-section" id="convert-sec">
+    <h2>Universal Convert</h2>
+    <div class="drop-zone">
+        <input type="file" id="convert-file" onchange="handleConvertUpload(this)">
+        <p>Drop ANY file here or click to browse</p>
+    </div>
+    <div id="convert-options-container" style="display:none; margin: 20px 0; text-align:left; background:var(--card-bg); padding:20px; border-radius:12px; border:1px solid var(--border);">
+        <p style="margin-top:0; font-weight:600; color:var(--text-main);">Detected File: <span id="convert-detected-type" style="color:var(--primary);"></span></p>
+        <label style="font-weight:600; display:block; margin-bottom:10px; color:var(--text-main);">Convert To:</label>
+        <select id="convert-target-format" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-family:'Poppins', sans-serif;">
+        </select>
+    </div>
+    <button onclick="executeConversion()" style="width:100%;">Start Conversion</button>
 </div>
 
 </div>
 </div>
+
+<div id="sig-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:3000;">
+    <div style="background:white; margin:10% auto; padding:20px; width:400px; border-radius:8px; text-align:center;">
+        <h3 style="color:black;">Draw Signature</h3>
+        <canvas id="sig-canvas" width="360" height="150" style="border:1px solid #ccc; background:#fff; touch-action:none;"></canvas>
+        <div style="margin-top:15px; display:flex; justify-content:space-between;">
+            <button onclick="clearSignature()" style="background:#ef4444; margin-top:0;">Clear</button>
+            <button onclick="closeSignature()" style="background:#6b7280; margin-top:0;">Cancel</button>
+            <button onclick="insertSignature()" style="background:#3b82f6; margin-top:0;">Insert</button>
+        </div>
+    </div>
+</div>
+
 <script src="app.js"></script>
 </body>
 </html>
