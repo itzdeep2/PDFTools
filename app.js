@@ -666,8 +666,25 @@ async function executeConversion() {
         a.href = imgData;
         a.download = `Converted_Page1.${target}`;
         a.click();
+    } else if (target === 'png' || target === 'jpeg' || target === 'webp') {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            
+            const imgData = canvas.toDataURL(`image/${target}`);
+            const a = document.createElement('a');
+            a.href = imgData;
+            a.download = `Converted_${file.name.split('.')[0]}.${target}`;
+            a.click();
+            URL.revokeObjectURL(img.src);
+        };
     } else {
-        alert(`Advanced format ${target.toUpperCase()} requires backend rendering. Client-side supports Image to PDF and PDF to Image.`);
+        alert(`Advanced format ${target.toUpperCase()} requires backend rendering. Client-side supports Image to PDF, PDF to Image, and Image to Image.`);
     }
 }
 
