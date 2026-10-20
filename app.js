@@ -650,8 +650,24 @@ async function executeConversion() {
         a.href = URL.createObjectURL(blob);
         a.download = 'Converted.pdf';
         a.click();
+    } else if ((target === 'png' || target === 'jpeg') && file.type === 'application/pdf') {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 2.0 });
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+        
+        const imgData = canvas.toDataURL(`image/${target}`);
+        const a = document.createElement('a');
+        a.href = imgData;
+        a.download = `Converted.${target}`;
+        a.click();
     } else {
-        alert(`Conversion to ${target.toUpperCase()} requires backend server.`);
+        alert(`Advanced format ${target.toUpperCase()} requires backend rendering.`);
     }
 }
 
