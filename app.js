@@ -764,3 +764,66 @@ async function removeImageBg() {
         console.error(e);
     }
 }
+
+async function removeAudioNoise() {
+    const fileInput = document.getElementById('noise-file');
+    const status = document.getElementById('noise-status');
+    if (!fileInput.files || fileInput.files.length === 0) return alert("Select an audio file");
+    
+    status.innerText = "Analyzing frequencies and applying noise gate...";
+    const file = fileInput.files[0];
+    
+    try {
+        const arrayBuffer = await file.arrayBuffer();
+        const actx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = await actx.decodeAudioData(arrayBuffer);
+        
+        const offlineCtx = new OfflineAudioContext(audioBuffer.numberOfChannels, audioBuffer.length, audioBuffer.sampleRate);
+        const source = offlineCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        
+        const filter = offlineCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 3000; 
+        
+        const compressor = offlineCtx.createDynamicsCompressor();
+        compressor.threshold.value = -50;
+        compressor.knee.value = 40;
+        compressor.ratio.value = 12;
+        compressor.attack.value = 0;
+        compressor.release.value = 0.25;
+        
+        source.connect(filter);
+        filter.connect(compressor);
+        compressor.connect(offlineCtx.destination);
+        source.start();
+        
+        const renderedBuffer = await offlineCtx.startRendering();
+        
+        const streamNode = actx.createMediaStreamDestination();
+        const sourcePlay = actx.createBufferSource();
+        sourcePlay.buffer = renderedBuffer;
+        sourcePlay.connect(streamNode);
+        
+        const mediaRecorder = new MediaRecorder(streamNode.stream);
+        const chunks = [];
+        mediaRecorder.ondataavailable = e => chunks.push(e.data);
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'audio/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `Cleaned_${file.name.split('.')[0]}.webm`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => document.body.removeChild(a), 100);
+            status.innerText = "Audio cleaned and downloaded!";
+        };
+        
+        sourcePlay.start();
+    } catch (e) {
+        status.innerText = "Error processing audio.";
+        console.error(e);
+    }
+}
