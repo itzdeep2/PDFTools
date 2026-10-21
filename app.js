@@ -210,6 +210,14 @@ function deleteActiveElement() {
     }
 }
 
+function mergePDFs() { alert('Merge PDFs executed'); }
+function splitPDF() { alert('Split PDF executed'); }
+function convertPdfToJpg() { alert('PDF to JPG executed'); }
+function removePassword() { alert('Remove Password executed'); }
+function runOCR() { alert('OCR executed'); }
+function protectPDF() { alert('Protect PDF executed'); }
+function compressPdf() { alert('Compress PDF executed')};
+
 function rgb2hex(rgb) {
     if (!rgb) return "#000000";
     let res = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
