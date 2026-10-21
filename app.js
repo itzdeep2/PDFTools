@@ -214,7 +214,28 @@ function mergePDFs() { alert('Merge PDFs executed'); }
 function splitPDF() { alert('Split PDF executed'); }
 function convertPdfToJpg() { alert('PDF to JPG executed'); }
 function removePassword() { alert('Remove Password executed'); }
-function runOCR() { alert('OCR executed'); }
+
+async function runOCR() {
+    const fileInput = document.getElementById('ocr-file');
+    const resultText = document.getElementById('ocr-result');
+    if (!fileInput.files || fileInput.files.length === 0) return alert("Select a file first");
+
+    resultText.innerText = "Extracting text... please wait.";
+    const file = fileInput.files[0];
+
+    try {
+        const worker = await Tesseract.createWorker();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        const { data: { text } } = await worker.recognize(file);
+        
+        resultText.innerText = text;
+        await worker.terminate();
+    } catch (e) {
+        resultText.innerText = "Error extracting text.";
+    }
+}
+
 function protectPDF() { alert('Protect PDF executed'); }
 function compressPdf() { alert('Compress PDF executed')};
 
