@@ -32,53 +32,42 @@ function handleRoute() {
 
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
+document.querySelectorAll('.drop-zone').forEach(zone => {
+        const input = zone.querySelector('input[type="file"]');
+        const p = zone.querySelector('p');
+        if (!input || !p) return;
+        const originalText = p.innerText;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('pdf_tools_theme');
-    if (savedTheme) {
-        document.getElementById('theme-selector').value = savedTheme;
-        changeTheme(savedTheme);
-    }
-    
-    const compFile = document.getElementById('compress-file');
-    if (compFile) {
-        compFile.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                document.getElementById('compress-options').style.display = 'block';
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            zone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            zone.addEventListener(eventName, () => zone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            zone.addEventListener(eventName, () => zone.classList.remove('dragover'), false);
+        });
+
+        zone.addEventListener('drop', (e) => {
+            input.files = e.dataTransfer.files;
+            input.dispatchEvent(new Event('change'));
+        });
+
+        input.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                p.innerText = this.files.length === 1 ? this.files[0].name : `${this.files.length} files selected`;
+                p.style.color = 'var(--primary)';
+            } else {
+                p.innerText = originalText;
+                p.style.color = 'var(--text-muted)';
             }
         });
-    }
-    
-    const uploadBtn = document.getElementById('editor-upload');
-    if(uploadBtn) {
-        uploadBtn.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    const wrapper = document.getElementById('editor-canvas-wrapper');
-                    wrapper.innerHTML = '';
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 800;
-                    canvas.height = 1000;
-                    canvas.style.backgroundColor = '#fff';
-                    canvas.style.border = '1px solid #ccc';
-                    
-                    const ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#fff';
-                    ctx.fillRect(0,0,800,1000);
-                    ctx.fillStyle = '#000';
-                    ctx.font = '24px Arial';
-                    ctx.fillText('PDF Document Render Placeholder', 50, 50);
-                    
-                    wrapper.appendChild(canvas);
-                    document.getElementById('empty-state').style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-});
+    });
 
 function changeTheme(theme) {
     if (theme === 'system') {
