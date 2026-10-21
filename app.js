@@ -224,15 +224,45 @@ async function runOCR() {
     const file = fileInput.files[0];
 
     try {
+        let imageForOcr = file;
+
+        if (file.type === 'application/pdf') {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 2.0 });
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+            
+            imageForOcr = canvas.toDataURL('image/png');
+        }
+
         const worker = await Tesseract.createWorker();
         await worker.loadLanguage('eng');
         await worker.initialize('eng');
-        const { data: { text } } = await worker.recognize(file);
-        
-        resultText.innerText = text;
+        const { data: { text } } = await worker.recognize(imageForOcr);
+
+        resultText.innerText = "Text extracted successfully! Downloading...";
         await worker.terminate();
+
+        const blob = new Blob([text], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = URL.createObjectURL(blob);
+        a.download = `OCR_Result_${file.name.split('.')[0]}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+        }, 100);
+
     } catch (e) {
-        resultText.innerText = "Error extracting text.";
+        resultText.innerText = "Error extracting text. Check console.";
     }
 }
 
