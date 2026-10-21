@@ -735,3 +735,32 @@ function executeConversion() {
     const target = document.getElementById('convert-target-format').value;
     alert(`File sent to conversion engine. Target format: ${target.toUpperCase()}`);
 }
+
+async function removeImageBg() {
+    const fileInput = document.getElementById('bg-file');
+    const status = document.getElementById('bg-status');
+    if (!fileInput.files || fileInput.files.length === 0) return alert("Select an image");
+    
+    status.innerText = "Downloading AI models and processing... this may take a moment.";
+    const file = fileInput.files[0];
+    
+    try {
+        const blob = await imglyRemoveBackground(file);
+        const url = URL.createObjectUrl(blob); 
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `NoBg_${file.name.split('.')[0]}.png`;
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 100);
+        status.innerText = "Background removed successfully!";
+    } catch (e) {
+        status.innerText = "Error removing background. Check console.";
+        console.error(e);
+    }
+}
