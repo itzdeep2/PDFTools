@@ -746,7 +746,7 @@ async function removeImageBg() {
     
     try {
         const blob = await imglyRemoveBackground(file);
-        const url = URL.createObjectUrl(blob); 
+        const url = URL.createObjectURL(blob); 
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
@@ -821,6 +821,11 @@ async function removeAudioNoise() {
             status.innerText = "Audio cleaned and downloaded!";
         };
         
+        sourcePlay.onended = () => {
+            mediaRecorder.stop();
+        };
+        
+        mediaRecorder.start();
         sourcePlay.start();
     } catch (e) {
         status.innerText = "Error processing audio.";
