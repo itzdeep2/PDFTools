@@ -788,6 +788,15 @@ function handleConvertUpload(input) {
     
     optionsContainer.style.display = 'block';
 }
+let ffmpegInstance = null;
+
+async function initFFmpeg() {
+    if (ffmpegInstance) return ffmpegInstance;
+    const { createFFmpeg } = FFmpeg;
+    ffmpegInstance = createFFmpeg({ log: false });
+    await ffmpegInstance.load();
+    return ffmpegInstance;
+}
 
 async function executeConversion() {
     const fileInput = document.getElementById('convert-file');
@@ -796,6 +805,7 @@ async function executeConversion() {
     const file = fileInput.files[0];
     const target = document.getElementById('convert-target-format').value;
     const rawName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    const typeLabel = document.getElementById('convert-detected-type');
     
     try {
         if (target === 'pdf' && file.type.includes('image')) {
@@ -857,12 +867,31 @@ async function executeConversion() {
                     URL.revokeObjectURL(img.src);
                 }, 100);
             };
+        } else if (['mp4', 'webm', 'mp3', 'wav', 'ogg'].includes(target) && (file.type.includes('video') || file.type.includes('audio'))) {
+            typeLabel.innerText = "Downloading FFmpeg core... processing media...";
+            const ffmpeg = await initFFmpeg();
+            const { fetchFile } = FFmpeg;
+            
+            ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+            await ffmpeg.run('-i', file.name, `output.${target}`);
+            const data = ffmpeg.FS('readFile', `output.${target}`);
+            
+            let mimeType = target.includes('mp4') || target.includes('webm') ? `video/${target}` : `audio/${target}`;
+            if (target === 'mp3') mimeType = 'audio/mpeg';
+            
+            const blob = new Blob([data.buffer], { type: mimeType });
+            saveBlob(blob, `Converted_${rawName}.${target}`);
+            
+            ffmpeg.FS('unlink', file.name);
+            ffmpeg.FS('unlink', `output.${target}`);
+            typeLabel.innerText = file.name;
         } else {
-            alert(`Format ${target.toUpperCase()} requires a backend server. Client supports PDF to Image, Image to PDF, and Image to Image.`);
+            alert(`Format ${target.toUpperCase()} requires a backend server. Client supports Images, PDFs, and Media (Audio/Video).`);
         }
     } catch (e) {
         console.error(e);
         alert("Conversion failed. Check console for details.");
+        typeLabel.innerText = file.name;
     }
 }
 
@@ -875,7 +904,10 @@ async function removeImageBg() {
     const file = fileInput.files[0];
     
     try {
-        const blob = await imglyRemoveBackground(file);
+        const config = {
+            publicPath: "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.3/dist/"
+        };
+        const blob = await imglyRemoveBackground.removeBackground(file, config);
         const url = URL.createObjectURL(blob); 
         const a = document.createElement('a');
         a.style.display = 'none';
@@ -893,7 +925,8 @@ async function removeImageBg() {
         status.innerText = "Error removing background. Check console.";
         console.error(e);
     }
-}
+} 
+
 
 async function removeAudioNoise() {
     const fileInput = document.getElementById('noise-file');
