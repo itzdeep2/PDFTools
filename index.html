@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Local PDF Tool</title>
-<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.3/dist/browser/bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib-plus-encrypt@1.1.0/dist/pdf-lib-plus-encrypt.min.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -81,6 +81,11 @@
         <h3>Clean Audio</h3>
         <p>Remove background noise</p>
     </a>
+    <a href="#rotate-sec" class="card">
+        <div class="card-icon">↻</div>
+        <h3>Rotate PDF</h3>
+        <p>Fix upside-down pages</p>
+    </a>
 </div>
 </div>
 <div id="tools-wrapper">
@@ -126,6 +131,19 @@
     </div>
 <button onclick="runOCR()">Extract Text</button>
 <p id="ocr-result"></p>
+</div>
+<div class="tool-section" id="rotate-sec">
+    <h2>Rotate Pages</h2>
+    <div class="drop-zone">
+        <input type="file" id="rotate-file" accept="application/pdf">
+        <p>Drop PDF here to rotate pages</p>
+    </div>
+    <select id="rotate-direction" style="width:100%; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--bg-color); color:var(--text-main); font-family:'Poppins', sans-serif;">
+        <option value="90">90° Clockwise</option>
+        <option value="-90">90° Counter-Clockwise</option>
+        <option value="180">180° Flip</option>
+    </select>
+    <button onclick="rotatePdfPages()" style="width:100%; margin-top:10px;">Rotate PDF</button>
 </div>
 
 <div class="tool-section" id="add-text-sec">

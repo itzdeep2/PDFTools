@@ -108,14 +108,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-function mergePDFs() { alert('Merge PDFs executed'); }
-function splitPDF() { alert('Split PDF executed'); }
-function convertPdfToJpg() { alert('PDF to JPG executed'); }
-function removePassword() { alert('Remove Password executed'); }
-function runOCR() { alert('OCR executed'); }
-function protectPDF() { alert('Protect PDF executed'); }
-function compressPdf() { alert('Compress PDF executed'); }
-
 function enableTextMode() {
     mode = 'text';
     document.querySelectorAll('.studio-tool-rail-btn').forEach(btn => btn.classList.remove('active'));
@@ -210,11 +202,6 @@ function deleteActiveElement() {
     }
 }
 
-function mergePDFs() { alert('Merge PDFs executed'); }
-function splitPDF() { alert('Split PDF executed'); }
-function convertPdfToJpg() { alert('PDF to JPG executed'); }
-function removePassword() { alert('Remove Password executed'); }
-
 async function runOCR() {
     const fileInput = document.getElementById('ocr-file');
     const resultText = document.getElementById('ocr-result');
@@ -265,9 +252,6 @@ async function runOCR() {
         resultText.innerText = "Error extracting text. Check console.";
     }
 }
-
-function protectPDF() { alert('Protect PDF executed'); }
-function compressPdf() { alert('Compress PDF executed')};
 
 function rgb2hex(rgb) {
     if (!rgb) return "#000000";
@@ -878,5 +862,28 @@ async function removeAudioNoise() {
     } catch (e) {
         status.innerText = "Error processing audio.";
         console.error(e);
+    }
+}
+
+async function rotatePdfPages() {
+    const fileInput = document.getElementById('rotate-file');
+    const dir = parseInt(document.getElementById('rotate-direction').value);
+    if (!fileInput.files || fileInput.files.length === 0) return alert("Select a PDF");
+    
+    try {
+        const arrayBuffer = await fileInput.files[0].arrayBuffer();
+        const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+        const pages = pdfDoc.getPages();
+        
+        pages.forEach(page => {
+            const currentRotation = page.getRotation().angle;
+            page.setRotation(PDFLib.degres(currentRotation + dir)); 
+        });
+        
+        const pdfBytes = await pdfDoc.save();
+        saveBlob(new Blob([pdfBytes], { type: 'application/pdf' }), `Rotated_${fileInput.files[0].name}`);
+    } catch (e) {
+        console.error(e);
+        alert("Failed to rotate document.");
     }
 }
