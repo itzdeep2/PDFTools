@@ -877,7 +877,7 @@ async function rotatePdfPages() {
         
         pages.forEach(page => {
             const currentRotation = page.getRotation().angle;
-            page.setRotation(PDFLib.degres(currentRotation + dir)); 
+            page.setRotation(PDFLib.degrees(currentRotation + dir));
         });
         
         const pdfBytes = await pdfDoc.save();
