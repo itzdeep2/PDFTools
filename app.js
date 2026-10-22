@@ -32,7 +32,8 @@ function handleRoute() {
 
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
-document.querySelectorAll('.drop-zone').forEach(zone => {
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.drop-zone').forEach(zone => {
         const input = zone.querySelector('input[type="file"]');
         const p = zone.querySelector('p');
         if (!input || !p) return;
@@ -68,6 +69,22 @@ document.querySelectorAll('.drop-zone').forEach(zone => {
             }
         });
     });
+
+    const savedTheme = localStorage.getItem('pdf_tools_theme');
+    if (savedTheme) {
+        document.getElementById('theme-selector').value = savedTheme;
+        changeTheme(savedTheme);
+    }
+    
+    const compFile = document.getElementById('compress-file');
+    if (compFile) {
+        compFile.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                document.getElementById('compress-options').style.display = 'block';
+            }
+        });
+    }
+});
 
 function changeTheme(theme) {
     if (theme === 'system') {
@@ -107,6 +124,173 @@ document.addEventListener('click', (e) => {
         playClickSound();
     }
 });
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+function saveBlob(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 200);
+}
+
+async function mergePDFs() {
+    const input = document.getElementById('merge-files');
+    if (!input.files || input.files.length < 2) return alert('Select at least 2 PDF files');
+    try {
+        const merged = await PDFLib.PDFDocument.create();
+        for (const file of input.files) {
+            const doc = await PDFLib.PDFDocument.load(await file.arrayBuffer());
+            const pages = await merged.copyPages(doc, doc.getPageIndices());
+            pages.forEach(p => merged.addPage(p));
+        }
+        const pdfBytes = await merged.save();
+        saveBlob(new Blob([pdfBytes], { type: 'application/pdf' }), 'Merged.pdf');
+    } catch (e) {
+        console.error(e);
+        alert('Merge failed.');
+    }
+}
+
+async function splitPDF() {
+    const input = document.getElementById('split-file');
+    if (!input.files || input.files.length === 0) return alert('Select a PDF first');
+    try {
+        const src = await PDFLib.PDFDocument.load(await input.files[0].arrayBuffer());
+        const out = await PDFLib.PDFDocument.create();
+        const [page] = await out.copyPages(src, [0]);
+        out.addPage(page);
+        const pdfBytes = await out.save();
+        saveBlob(new Blob([pdfBytes], { type: 'application/pdf' }), 'Page1_' + input.files[0].name);
+    } catch (e) {
+        console.error(e);
+        alert('Split failed.');
+    }
+}
+
+async function convertPdfToJpg() {
+    const input = document.getElementById('jpg-file');
+    if (!input.files || input.files.length === 0) return alert('Select a PDF first');
+    try {
+        const arrayBuffer = await input.files[0].arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 2.0 });
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+        
+        const imgData = canvas.toDataURL('image/jpeg', 0.92);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = imgData;
+        a.download = `Page1_${input.files[0].name.split('.')[0]}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => document.body.removeChild(a), 100);
+    } catch (e) {
+        console.error(e);
+        alert('Conversion failed.');
+    }
+}
+
+async function removePassword() {
+    const input = document.getElementById('unlock-file');
+    const pass = document.getElementById('pdf-pass').value;
+    if (!input.files || input.files.length === 0) return alert('Select a PDF first');
+    try {
+        const doc = await PDFLib.PDFDocument.load(await input.files[0].arrayBuffer(), { password: pass || undefined });
+        const pdfBytes = await doc.save();
+        saveBlob(new Blob([pdfBytes], { type: 'application/pdf' }), 'Unlocked_' + input.files[0].name);
+    } catch (e) {
+        console.error(e);
+        alert('Wrong password or corrupted file.');
+    }
+}
+
+async function runOCR() {
+    const input = document.getElementById('ocr-file');
+    const resultText = document.getElementById('ocr-result');
+    if (!input.files || input.files.length === 0) return alert("Select a file first");
+
+    resultText.innerText = "Extracting text... please wait.";
+    const file = input.files[0];
+
+    try {
+        let imageForOcr = file;
+        if (file.type === 'application/pdf') {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 2.0 });
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+            
+            imageForOcr = canvas.toDataURL('image/png');
+        }
+
+        const worker = await Tesseract.createWorker();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        const { data: { text } } = await worker.recognize(imageForOcr);
+
+        resultText.innerText = "Text extracted successfully! Downloading...";
+        await worker.terminate();
+
+        const blob = new Blob([text], { type: 'text/plain' });
+        saveBlob(blob, `OCR_Result_${file.name.split('.')[0]}.txt`);
+    } catch (e) {
+        console.error(e);
+        resultText.innerText = "Error extracting text. Check console.";
+    }
+}
+
+async function protectPDF() {
+    const input = document.getElementById('protect-file');
+    const pass = document.getElementById('protect-pass').value;
+    if (!input.files || input.files.length === 0) return alert('Select a PDF first');
+    if (!pass) return alert('Enter a password');
+    try {
+        const doc = await PDFLib.PDFDocument.load(await input.files[0].arrayBuffer());
+        doc.encrypt({
+            userPassword: pass,
+            ownerPassword: pass,
+            permissions: { printing: 'highResolution', modifying: false, copying: false }
+        });
+        const pdfBytes = await doc.save();
+        saveBlob(new Blob([pdfBytes], { type: 'application/pdf' }), 'Protected_' + input.files[0].name);
+    } catch (e) {
+        console.error(e);
+        alert('Protect failed.');
+    }
+}
+
+async function compressPdf() {
+    const input = document.getElementById('compress-file');
+    const levelInput = document.getElementById('compress-level');
+    if (!input.files || input.files.length === 0) return alert("Select a PDF");
+    try {
+        const doc = await PDFLib.PDFDocument.load(await input.files[0].arrayBuffer());
+        const useStreams = levelInput ? parseInt(levelInput.value) > 50 : false;
+        const pdfBytes = await doc.save({ useObjectStreams: useStreams });
+        saveBlob(new Blob([pdfBytes], { type: 'application/pdf' }), 'Compressed_' + input.files[0].name);
+    } catch (e) {
+        console.error(e);
+        alert("Compression failed.");
+    }
+}
 
 function enableTextMode() {
     mode = 'text';
@@ -202,56 +386,6 @@ function deleteActiveElement() {
     }
 }
 
-async function runOCR() {
-    const fileInput = document.getElementById('ocr-file');
-    const resultText = document.getElementById('ocr-result');
-    if (!fileInput.files || fileInput.files.length === 0) return alert("Select a file first");
-
-    resultText.innerText = "Extracting text... please wait.";
-    const file = fileInput.files[0];
-
-    try {
-        let imageForOcr = file;
-
-        if (file.type === 'application/pdf') {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            const page = await pdf.getPage(1);
-            const viewport = page.getViewport({ scale: 2.0 });
-            
-            const canvas = document.createElement('canvas');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-            
-            imageForOcr = canvas.toDataURL('image/png');
-        }
-
-        const worker = await Tesseract.createWorker();
-        await worker.loadLanguage('eng');
-        await worker.initialize('eng');
-        const { data: { text } } = await worker.recognize(imageForOcr);
-
-        resultText.innerText = "Text extracted successfully! Downloading...";
-        await worker.terminate();
-
-        const blob = new Blob([text], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = URL.createObjectURL(blob);
-        a.download = `OCR_Result_${file.name.split('.')[0]}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(a.href);
-        }, 100);
-
-    } catch (e) {
-        resultText.innerText = "Error extracting text. Check console.";
-    }
-}
 
 function rgb2hex(rgb) {
     if (!rgb) return "#000000";
@@ -661,111 +795,75 @@ async function executeConversion() {
     
     const file = fileInput.files[0];
     const target = document.getElementById('convert-target-format').value;
+    const rawName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
     
-    if (target === 'pdf' && file.type.includes('image')) {
-        const imgBytes = await file.arrayBuffer();
-        const pdfDoc = await PDFLib.PDFDocument.create();
-        
-        let img;
-        if (file.type === 'image/jpeg') {
-            img = await pdfDoc.embedJpg(imgBytes);
-        } else {
-            img = await pdfDoc.embedPng(imgBytes);
-        }
-        
-        const page = pdfDoc.addPage([img.width, img.height]);
-        page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
-        
-        const pdfBytes = await pdfDoc.save();
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `Converted_${file.name.split('.')[0]}.pdf`;
-        a.click();
-    } else if ((target === 'png' || target === 'jpeg') && file.type === 'application/pdf') {
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        const page = await pdf.getPage(1);
-        const viewport = page.getViewport({ scale: 2.0 });
-        
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
-        
-        const imgData = canvas.toDataURL(`image/${target}`);
-        const a = document.createElement('a');
-        a.href = imgData;
-        a.download = `Converted_Page1.${target}`;
-        a.click();
-    } else if (target === 'png' || target === 'jpeg' || target === 'webp') {
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        img.onload = () => {
+    try {
+        if (target === 'pdf' && file.type.includes('image')) {
+            const imgBytes = await file.arrayBuffer();
+            const pdfDoc = await PDFLib.PDFDocument.create();
+            
+            let img;
+            if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                img = await pdfDoc.embedJpg(imgBytes);
+            } else {
+                img = await pdfDoc.embedPng(imgBytes);
+            }
+            
+            const page = pdfDoc.addPage([img.width, img.height]);
+            page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+            
+            const pdfBytes = await pdfDoc.save();
+            saveBlob(new Blob([pdfBytes], { type: 'application/pdf' }), `Converted_${rawName}.pdf`);
+            
+        } else if ((target === 'png' || target === 'jpeg') && file.type === 'application/pdf') {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 2.0 });
+            
             const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
             
             const imgData = canvas.toDataURL(`image/${target}`);
             const a = document.createElement('a');
+            a.style.display = 'none';
             a.href = imgData;
-            a.download = `Converted_${file.name.split('.')[0]}.${target}`;
+            a.download = `Converted_Page1.${target}`;
+            document.body.appendChild(a);
             a.click();
-            URL.revokeObjectURL(img.src);
-        };
-    } else {
-        alert(`Advanced format ${target.toUpperCase()} requires backend rendering. Client-side supports Image to PDF, PDF to Image, and Image to Image.`);
+            setTimeout(() => document.body.removeChild(a), 100);
+            
+        } else if (target === 'png' || target === 'jpeg' || target === 'webp') {
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                
+                const imgData = canvas.toDataURL(`image/${target}`);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = imgData;
+                a.download = `Converted_${rawName}.${target}`;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(img.src);
+                }, 100);
+            };
+        } else {
+            alert(`Format ${target.toUpperCase()} requires a backend server. Client supports PDF to Image, Image to PDF, and Image to Image.`);
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Conversion failed. Check console for details.");
     }
-}
-
-function handleConvertUpload(input) {
-    const file = input.files[0];
-    if (!file) return;
-    
-    const optionsContainer = document.getElementById('convert-options-container');
-    const select = document.getElementById('convert-target-format');
-    const typeLabel = document.getElementById('convert-detected-type');
-    
-    select.innerHTML = '';
-    typeLabel.innerText = file.name;
-    
-    const type = file.type.toLowerCase();
-    let targets = [];
-    
-    if (type.includes('image')) {
-        targets = ['PDF', 'PNG', 'JPEG', 'WEBP', 'GIF'];
-    } else if (type.includes('pdf')) {
-        targets = ['Word (DOCX)', 'Images (PNG)', 'Images (JPG)', 'Text (TXT)'];
-    } else if (type.includes('audio')) {
-        targets = ['MP3', 'WAV', 'OGG', 'AAC'];
-    } else if (type.includes('video')) {
-        targets = ['MP4', 'GIF', 'WEBM', 'Audio (MP3)'];
-    } else if (type.includes('text')) {
-        targets = ['PDF', 'Word (DOCX)'];
-    } else {
-        targets = ['ZIP', 'PDF'];
-    }
-
-    targets.forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t.split(' ')[0].toLowerCase();
-        opt.innerText = t;
-        select.appendChild(opt);
-    });
-    
-    optionsContainer.style.display = 'block';
-}
-
-function executeConversion() {
-    const fileInput = document.getElementById('convert-file');
-    if (!fileInput.files || fileInput.files.length === 0) {
-        alert("Please select a file to convert.");
-        return;
-    }
-    const target = document.getElementById('convert-target-format').value;
-    alert(`File sent to conversion engine. Target format: ${target.toUpperCase()}`);
 }
 
 async function removeImageBg() {
