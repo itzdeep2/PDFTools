@@ -939,8 +939,6 @@ function handleConvertUpload(input) {
     optionsContainer.style.display = 'block';
 }
 
-
-
 async function removeImageBg() {
     const fileInput = document.getElementById('bg-file');
     const status = document.getElementById('bg-status');
@@ -950,10 +948,7 @@ async function removeImageBg() {
     const file = fileInput.files[0];
     
     try {
-        const config = {
-            publicPath: "https://unpkg.com/@imgly/background-removal@1.4.3/dist/"
-        };
-        const blob = await imglyRemoveBackground(file, config);
+        const blob = await imglyRemoveBackground(file);
         const url = URL.createObjectURL(blob); 
         const a = document.createElement('a');
         a.style.display = 'none';
