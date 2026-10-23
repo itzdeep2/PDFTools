@@ -332,33 +332,6 @@ async function compressPdf() {
     }
 }
 
-let ffmpegInstance = null;
-
-async function initFFmpeg() {
-    if (ffmpegInstance) return ffmpegInstance;
-    const { createFFmpeg } = FFmpeg;
-    ffmpegInstance = createFFmpeg({
-        log: true,
-        corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
-    });
-    await ffmpegInstance.load();
-    return ffmpegInstance;
-}
-
-
-let ffmpegInstance = null;
-
-async function initFFmpeg() {
-    if (ffmpegInstance) return ffmpegInstance;
-    const { createFFmpeg } = FFmpeg;
-    ffmpegInstance = createFFmpeg({
-        log: true,
-        corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
-    });
-    await ffmpegInstance.load();
-    return ffmpegInstance;
-}
-
 async function executeConversion() {
     const fileInput = document.getElementById('convert-file');
     if (!fileInput.files || fileInput.files.length === 0) return alert("Select a file");
@@ -952,6 +925,116 @@ function handleConvertUpload(input) {
     });
     
     optionsContainer.style.display = 'block';
+}
+
+let ffmpegInstance = null;
+
+async function initFFmpeg() {
+    if (ffmpegInstance) return ffmpegInstance;
+    const { createFFmpeg } = FFmpeg;
+    ffmpegInstance = createFFmpeg({
+        log: true,
+        corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
+    });
+    await ffmpegInstance.load();
+    return ffmpegInstance;
+}
+
+async function executeConversion() {
+    const fileInput = document.getElementById('convert-file');
+    if (!fileInput.files || fileInput.files.length === 0) return alert("Select a file");
+    
+    const file = fileInput.files[0];
+    const target = document.getElementById('convert-target-format').value;
+    const rawName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+    const typeLabel = document.getElementById('convert-detected-type');
+    
+    try {
+        if (target === 'pdf' && file.type.includes('image')) {
+            const imgBytes = await file.arrayBuffer();
+            const pdfDoc = await PDFLib.PDFDocument.create();
+            
+            let img;
+            if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                img = await pdfDoc.embedJpg(imgBytes);
+            } else {
+                img = await pdfDoc.embedPng(imgBytes);
+            }
+            
+            const page = pdfDoc.addPage([img.width, img.height]);
+            page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
+            
+            const pdfBytes = await pdfDoc.save();
+            saveBlob(new Blob([pdfBytes], { type: 'application/pdf' }), `Converted_${rawName}.pdf`);
+            
+        } else if ((target === 'png' || target === 'jpeg') && file.type === 'application/pdf') {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 2.0 });
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+            
+            const imgData = canvas.toDataURL(`image/${target}`);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = imgData;
+            a.download = `Converted_Page1.${target}`;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => document.body.removeChild(a), 100);
+            
+        } else if (target === 'png' || target === 'jpeg' || target === 'webp') {
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                
+                const imgData = canvas.toDataURL(`image/${target}`);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = imgData;
+                a.download = `Converted_${rawName}.${target}`;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(img.src);
+                }, 100);
+            };
+        } else if (['mp4', 'webm', 'mp3', 'wav', 'ogg'].includes(target) && (file.type.includes('video') || file.type.includes('audio'))) {
+            typeLabel.innerText = "Downloading FFmpeg core... processing media...";
+            const ffmpeg = await initFFmpeg();
+            const { fetchFile } = FFmpeg;
+            
+            ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+            await ffmpeg.run('-i', file.name, `output.${target}`);
+            const data = ffmpeg.FS('readFile', `output.${target}`);
+            
+            let mimeType = target.includes('mp4') || target.includes('webm') ? `video/${target}` : `audio/${target}`;
+            if (target === 'mp3') mimeType = 'audio/mpeg';
+            
+            const blob = new Blob([data.buffer], { type: mimeType });
+            saveBlob(blob, `Converted_${rawName}.${target}`);
+            
+            ffmpeg.FS('unlink', file.name);
+            ffmpeg.FS('unlink', `output.${target}`);
+            typeLabel.innerText = file.name;
+        } else {
+            alert(`Format ${target.toUpperCase()} requires a backend server. Client supports Images, PDFs, and Media (Audio/Video).`);
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Conversion failed. Check console for details.");
+        typeLabel.innerText = file.name;
+    }
 }
 
 async function removeImageBg() {
