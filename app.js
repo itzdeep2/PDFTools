@@ -345,6 +345,20 @@ async function initFFmpeg() {
     return ffmpegInstance;
 }
 
+
+let ffmpegInstance = null;
+
+async function initFFmpeg() {
+    if (ffmpegInstance) return ffmpegInstance;
+    const { createFFmpeg } = FFmpeg;
+    ffmpegInstance = createFFmpeg({
+        log: true,
+        corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
+    });
+    await ffmpegInstance.load();
+    return ffmpegInstance;
+}
+
 async function executeConversion() {
     const fileInput = document.getElementById('convert-file');
     if (!fileInput.files || fileInput.files.length === 0) return alert("Select a file");
@@ -441,6 +455,7 @@ async function executeConversion() {
         typeLabel.innerText = file.name;
     }
 }
+
 
 function enableTextMode() {
     mode = 'text';
@@ -1058,3 +1073,39 @@ async function rotatePdfPages() {
         alert("Failed to rotate document.");
     }
 }
+
+document.getElementById('editor-upload').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type === 'application/pdf') {
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 1.5 });
+
+            const wrapper = document.getElementById('editor-canvas-wrapper');
+            wrapper.innerHTML = '';
+            wrapper.style.width = viewport.width + 'px';
+            wrapper.style.height = viewport.height + 'px';
+
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.zIndex = '1';
+
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+            wrapper.appendChild(canvas);
+            document.getElementById('empty-state').style.display = 'none';
+        } catch (error) {
+            console.error(error);
+            alert("Error loading PDF.");
+        }
+    } else {
+        alert("Please select a valid PDF file.");
+    }
+});
