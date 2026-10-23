@@ -794,12 +794,16 @@ function handleConvertUpload(input) {
     
     optionsContainer.style.display = 'block';
 }
+
 let ffmpegInstance = null;
 
 async function initFFmpeg() {
     if (ffmpegInstance) return ffmpegInstance;
     const { createFFmpeg } = FFmpeg;
-    ffmpegInstance = createFFmpeg({ log: false });
+    ffmpegInstance = createFFmpeg({
+        log: true,
+        corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js'
+    });
     await ffmpegInstance.load();
     return ffmpegInstance;
 }
