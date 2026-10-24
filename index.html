@@ -8,9 +8,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 <script type="module">
-    import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.0.0/dist/transformers.min.js';
-    env.allowLocalModels = false;
-    window.transformers = { pipeline };
+    import { removeBackground } from 'https://cdn.jsdelivr.net/npm/@bg0/browser/+esm';
+    
+    window.removeImageBg = async function() {
+        const fileInput = document.getElementById('bg-file');
+        const status = document.getElementById('bg-status');
+        if (!fileInput.files.length) return alert("Select an image");
+        
+        const file = fileInput.files[0];
+        status.innerText = "Loading BG0 model...";
+        
+        try {
+            const result = await removeBackground(file, {
+                onProgress: (p) => status.innerText = `${p.message} (${Math.round(p.progress * 100)}%)`
+            });
+            
+            const url = URL.createObjectURL(result.blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `NoBg_${file.name.split('.')[0]}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            status.innerText = "Success!";
+        } catch (e) {
+            status.innerText = "Error. Check console.";
+            console.error(e);
+        }
+    }
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib-plus-encrypt@1.1.0/dist/pdf-lib-plus-encrypt.min.js"></script>
