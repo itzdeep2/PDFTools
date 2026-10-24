@@ -1042,35 +1042,67 @@ async function removeImageBg() {
     const status = document.getElementById('bg-status');
     if (!fileInput.files || fileInput.files.length === 0) return alert("Select an image");
     
-    status.innerText = "Downloading AI models and processing... this may take a moment.";
+    status.innerText = "Loading background removal model... this will take a minute on first run.";
     const file = fileInput.files[0];
     
     try {
-        const config = {
-            publicPath: "https://unpkg.com/@imgly/background-removal@1.4.3/dist/"
+        if (!window.transformers) {
+            throw new Error("Transformers.js not loaded yet. Please wait a second and try again.");
+        }
+        
+        const { pipeline } = window.transformers;
+        const segmenter = await pipeline('image-segmentation', 'briaai/RMBG-1.4', {
+            quantized: true
+        });
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            status.innerText = "Processing image...";
+            const imgUrl = e.target.result;
+            
+            const result = await segmenter(imgUrl);
+            const maskCanvas = document.createElement('canvas');
+            const maskCtx = maskCanvas.getContext('2d');
+            
+            const img = new Image();
+            img.src = imgUrl;
+            img.onload = () => {
+                maskCanvas.width = img.width;
+                maskCanvas.height = img.height;
+                maskCtx.drawImage(result.mask, 0, 0, img.width, img.height);
+                
+                const finalCanvas = document.createElement('canvas');
+                finalCanvas.width = img.width;
+                finalCanvas.height = img.height;
+                const finalCtx = finalCanvas.getContext('2d');
+                
+                finalCtx.drawImage(img, 0, 0);
+                finalCtx.globalCompositeOperation = 'destination-in';
+                finalCtx.drawImage(maskCanvas, 0, 0);
+                
+                finalCanvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `NoBg_${file.name.split('.')[0]}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                    status.innerText = "Background removed successfully!";
+                }, 'image/png');
+            };
         };
-        
-        const blob = await window.imglyRemoveBackground(file, config);
-        
-        const url = URL.createObjectURL(blob); 
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = `NoBg_${file.name.split('.')[0]}.png`;
-        document.body.appendChild(a);
-        a.click();
-        
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }, 100);
-        status.innerText = "Background removed successfully!";
+        reader.readAsDataURL(file);
     } catch (e) {
         status.innerText = "Error removing background. Check console.";
         console.error(e);
     }
 }
-
 
 async function removeAudioNoise() {
     const fileInput = document.getElementById('noise-file');
