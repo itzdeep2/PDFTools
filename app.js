@@ -1046,7 +1046,12 @@ async function removeImageBg() {
     const file = fileInput.files[0];
     
     try {
-        const blob = await imglyRemoveBackground(file);
+        const config = {
+            publicPath: "https://unpkg.com/@imgly/background-removal@1.4.3/dist/"
+        };
+        
+        const blob = await window.imglyRemoveBackground(file, config);
+        
         const url = URL.createObjectURL(blob); 
         const a = document.createElement('a');
         a.style.display = 'none';
@@ -1065,6 +1070,7 @@ async function removeImageBg() {
         console.error(e);
     }
 }
+
 
 async function removeAudioNoise() {
     const fileInput = document.getElementById('noise-file');
