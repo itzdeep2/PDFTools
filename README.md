@@ -28,3 +28,9 @@ The files are processed in the browser instead of being uploaded to my server.
 ## Run it
 
 Open `index.html` in your browser. If something doesn't work, try running it with a local server.
+
+## Deploy on Netlify
+
+This is a static site and does not need a build step or package installation.
+The root `netlify.toml` sets the base and publish directories to the repository
+root and clears the build command, overriding the old `bun run build` setting.
