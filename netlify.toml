@@ -1,7 +1,7 @@
 [build]
-  base = "."
-  command = ""
-  publish = "."
+  base = "apps/web"
+  command = "bun run build"
+  publish = "dist"
 
 [context.production]
   command = ""
