@@ -83,10 +83,10 @@
         <h3>OCR Text</h3>
         <p>Extract text from documents</p>
     </a>
-    <a href="#add-text-sec" class="card">
+    <a href="#tela-sec" class="card">
         <div class="card-icon">🎨</div>
-        <h3>OpenDesign</h3>
-        <p>Universal canvas editor and signature</p>
+        <h3>Tela</h3>
+        <p>Design anything with a local canvas editor</p>
     </a>
     <a href="#protect-sec" class="card">
         <div class="card-icon">🔒</div>
@@ -120,13 +120,12 @@
 </div>
 </div>
 <div id="tools-wrapper">
-<div class="tool-section" id="merge-sec">
-    <h2>Merge PDFs</h2>
-    <div class="drop-zone">
-        <input type="file" id="merge-files" multiple accept="application/pdf">
-        <p>Drop files here or click to browse</p>
+<div class="tool-section" id="tela-sec">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+        <h2 style="margin:0;">Tela Design Editor</h2>
+        <button type="button" onclick="window.open('tela/index.html', '_blank', 'noopener')" style="width:auto; margin:0;">Open in new tab</button>
     </div>
-    <button onclick="mergePDFs()">Merge Files</button>
+    <iframe title="Tela design editor" src="tela/index.html" style="width:100%; height:calc(100vh - 150px); min-height:650px; border:1px solid var(--border); border-radius:12px; background:#fff;" allow="clipboard-read; clipboard-write"></iframe>
 </div>
 <div class="tool-section" id="split-sec">
 <h2>Split First Page</h2>
@@ -340,18 +339,6 @@
 </div>
 
 </div>
-</div>
-
-<div id="sig-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:3000;">
-    <div style="background:white; margin:10% auto; padding:20px; width:400px; border-radius:8px; text-align:center;">
-        <h3 style="color:black;">Draw Signature</h3>
-        <canvas id="sig-canvas" width="360" height="150" style="border:1px solid #ccc; background:#fff; touch-action:none;"></canvas>
-        <div style="margin-top:15px; display:flex; justify-content:space-between;">
-            <button onclick="clearSignature()" style="background:#ef4444; margin-top:0;">Clear</button>
-            <button onclick="closeSignature()" style="background:#6b7280; margin-top:0;">Cancel</button>
-            <button onclick="insertSignature()" style="background:#3b82f6; margin-top:0;">Insert</button>
-        </div>
-    </div>
 </div>
 <div class="tool-section" id="convert-sec">
     <h2>Universal Convert</h2>

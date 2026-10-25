@@ -10,7 +10,7 @@ function handleRoute() {
     const hash = window.location.hash || '#dashboard';
     
     document.getElementById('dashboard').style.display = hash === '#dashboard' ? 'block' : 'none';
-    document.getElementById('nav-bar').style.display = (hash === '#dashboard' || hash === '#add-text-sec') ? 'none' : 'block';
+    document.getElementById('nav-bar').style.display = (hash === '#dashboard' || hash === '#tela-sec') ? 'none' : 'block';
     document.getElementById('tools-wrapper').style.display = hash !== '#dashboard' ? 'block' : 'none';
     
     const sections = document.querySelectorAll('.tool-section');
@@ -23,7 +23,7 @@ function handleRoute() {
         }
     }
 
-    if (hash === '#add-text-sec') {
+    if (hash === '#tela-sec') {
         document.body.style.padding = '0';
     } else {
         document.body.style.padding = '40px 20px';
