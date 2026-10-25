@@ -3,6 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "node scripts/build.mjs"
+    "build": "cd tela-source && npm ci && npm run build && cd .. && node scripts/build.mjs"
   }
 }
