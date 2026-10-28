@@ -487,3 +487,13 @@ body[data-theme="pastel-green"] {
 --primary: #3cb371;
 --primary-hover: #2e8b57;
 }
+
+#opendesign-sec {
+max-width: min(1700px, 98vw);
+width: 98vw;
+padding: 20px;
+}
+
+#opendesign-sec iframe {
+height: calc(100vh - 130px) !important;
+}

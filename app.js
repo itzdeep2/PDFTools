@@ -1,3 +1,4 @@
+const OPENDESIGN_URL = 'https://hackclubindia.com/--/projects/opendesign/';
 let visualElements = [];
 let activeElement = null;
 let mode = 'none';
@@ -10,7 +11,7 @@ function handleRoute() {
     const hash = window.location.hash || '#dashboard';
     
     document.getElementById('dashboard').style.display = hash === '#dashboard' ? 'block' : 'none';
-    document.getElementById('nav-bar').style.display = (hash === '#dashboard' || hash === '#tela-sec') ? 'none' : 'block';
+    document.getElementById('nav-bar').style.display = (hash === '#dashboard' || hash === '#opendesign-sec') ? 'none' : 'block';
     document.getElementById('tools-wrapper').style.display = hash !== '#dashboard' ? 'block' : 'none';
     
     const sections = document.querySelectorAll('.tool-section');
@@ -23,12 +24,12 @@ function handleRoute() {
         }
     }
 
-    if (hash === '#tela-sec') {
+    if (hash === '#opendesign-sec') {
+        const frame = document.getElementById('opendesign-frame');
+        if (frame && !frame.getAttribute('src')) frame.setAttribute('src', OPENDESIGN_URL);
         document.body.style.padding = '0';
-    } else {
-        document.body.style.padding = '40px 20px';
     }
-}
+};
 
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
@@ -882,7 +883,7 @@ async function saveVisualEdits() {
     
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'OpenDesign_Export.pdf';
+    a.download = 'PDFTools_Edited.pdf';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

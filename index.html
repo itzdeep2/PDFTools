@@ -83,9 +83,9 @@
         <h3>OCR Text</h3>
         <p>Extract text from documents</p>
     </a>
-    <a href="#tela-sec" class="card">
+    <a href="#opendesign-sec" class="card">
         <div class="card-icon">🎨</div>
-        <h3>Tela</h3>
+        <h3>OpenDesign</h3>
         <p>Design anything with a local canvas editor</p>
     </a>
     <a href="#protect-sec" class="card">
@@ -121,12 +121,12 @@
 </div>
 </div>
 <div id="tools-wrapper">
-<div class="tool-section" id="tela-sec">
+<div class="tool-section" id="opendesign-sec">
     <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
-        <h2 style="margin:0;">Tela Design Editor</h2>
-        <button type="button" onclick="window.open('tela/index.html', '_blank', 'noopener')" style="width:auto; margin:0;">Open in new tab</button>
+        <h2 style="margin:0;">OpenDesign Editor</h2>
+        <button type="button" onclick="window.open(OPENDESIGN_URL, '_blank', 'noopener')" style="width:auto; margin:0;">Open in new tab</button>
     </div>
-    <iframe title="Tela design editor" src="tela/index.html" style="width:100%; height:calc(100vh - 150px); min-height:650px; border:1px solid var(--border); border-radius:12px; background:#fff;" allow="clipboard-read; clipboard-write"></iframe>
+    <iframe id="opendesign-frame" title="OpenDesign editor" style="width:100%; height:calc(100vh - 150px); min-height:650px; border:1px solid var(--border); border-radius:12px; background:#fff;" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
 </div>
 <div class="tool-section" id="split-sec">
 <h2>Split First Page</h2>
